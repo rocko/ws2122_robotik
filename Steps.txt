@@ -1,0 +1,11 @@
+Step 1
+
+- Create a Standalone TB3 package that runs on its own
+- Identify needed packages
+
+
+
+Step 2
+
+- Create a TB3 package that runs a simulation in gazebo
+
