@@ -55,12 +55,14 @@ class zigzag(Node):
 		self.scan_ranges = msg.ranges  # Update sensor data
 
 		self.init_scan_state = True
+		self.get_logger().info("scan_callback %s" % msg)
 
 	def cmd_vel_raw_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
 		# Change is contained in "msg"
 		self.velocity[0] = msg.linear.x  # Update linear velocity
 		self.velocity[1] = msg.angular.z  # Update angular velocity
+		self.get_logger().info("cmd_vel_raw_callback %s" % msg)
 
 	#def odom_callback(self, msg):
 	#	self.last_pose[0] = msg.pose.pose.position.x
@@ -85,6 +87,7 @@ class zigzag(Node):
 			if twist.linear.x < BURGER_MAX_LIN_VEL:
 				self.get_logger().info("Robot accelerating.")
 				twist.linear.x = self.velocity[0] + 0.01  # Accelerate if needed
+				self.get_logger().info("New linear velocity is %s." % twist.linear.x)
 			else:
 				twist.linear.x = self.velocity[0]  # Dont change linear velocity
 			
