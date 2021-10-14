@@ -55,7 +55,7 @@ class zigzag(Node):
 		self.scan_ranges = msg.ranges  # Update sensor data
 
 		self.init_scan_state = True
-		self.get_logger().info("scan_callback %s" % msg)
+		#self.get_logger().info("scan_callback %s" % msg)
 
 	def cmd_vel_raw_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
@@ -85,9 +85,9 @@ class zigzag(Node):
 		#  # if no
 		if obstacle_distance > safety_distance:
 			if twist.linear.x < BURGER_MAX_LIN_VEL:
-				self.get_logger().info("Robot accelerating.")
+				#self.get_logger().info("Robot accelerating.")
 				twist.linear.x = self.velocity[0] + 0.01  # Accelerate if needed
-				self.get_logger().info("New linear velocity is %s." % twist.linear.x)
+				#self.get_logger().info("New linear velocity is %s." % twist.linear.x)
 			else:
 				twist.linear.x = self.velocity[0]  # Dont change linear velocity
 			
@@ -103,11 +103,11 @@ class zigzag(Node):
 			# Rotate 180 degrees right
 			twist.linear.x = 0.0
 			twist.angular.z = 0.0
-			self.get_logger().info("Obstacles are detected nearby. Robot stopped.")
+			#self.get_logger().info("Obstacles are detected nearby. Robot stopped.")
 
-			self.get_logger().info("Sleep 1 second")
+			#self.get_logger().info("Sleep 1 second")
 
-			self.get_logger().info("Turn")
+			#self.get_logger().info("Turn")
 
 		self.cmd_vel_pub.publish(twist)
 
