@@ -21,7 +21,7 @@ ANG_VEL_STEP_SIZE = 0.1
 class zigzag(Node):
 	def __init__(self) -> None:
 		super().__init__("zigzag")
-		self.get_logger().info("ZZzzzzzzzzzzzigzag")
+		
 		qos = QoSProfile(depth=10)
 
 		# Initialise variables
@@ -47,6 +47,7 @@ class zigzag(Node):
 
 		# Sleep 5 seconds until all the shit is loaded
 		#sleep(5)  # seconds
+		self.get_logger().info("ZZzzzzzzzzzzzigzag initialized.")
 
 	# CALLBACK FUNCTIONS
 	def scan_callback(self, msg) -> None:
