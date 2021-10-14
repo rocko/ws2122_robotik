@@ -31,15 +31,9 @@ link_directories(
   ${GAZEBO_LIBRARY_DIRS}
 )
 
-include_directories(
-  include
-  ${GAZEBO_INCLUDE_DIRS}
-)
-
 set(dependencies
   "rclcpp"
 )
-
 
 ################################################################################
 # Install
@@ -48,13 +42,9 @@ install(TARGETS ${EXEC_NAME}
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY worlds
+install(DIRECTORY models worlds
   DESTINATION share/${PROJECT_NAME}/
 )
-
-#install(DIRECTORY include/
-#  DESTINATION include/
-#)
 
 ################################################################################
 # Macro for ament package

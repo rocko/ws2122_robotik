@@ -86,7 +86,7 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='fuck_house_1'>
+    <model name='simple_room_model'>
       <pose>-2.63 -1.86118 0 0 -0 0</pose>
       <link name='Wall_0'>
         <collision name='Wall_0_Collision'>
@@ -680,7 +680,7 @@
       <real_time>22 837603517</real_time>
       <wall_time>1634065183 242752788</wall_time>
       <iterations>22645</iterations>
-      <model name='fuck_house_1'>
+      <model name='simple_room_model'>
         <pose>-2.63 -1.86118 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='Wall_0'>
