@@ -23,10 +23,10 @@ def generate_launch_description():
 
 	cka_node_zigzag = Node(
 		package="cka",
-		executable="cka_node_zigzag",
+		executable="cka_zigzag",
 		output="screen",
 	)
 
-	ld.add_action(cka_node_zigzag)
+	ld.add_action(cka_zigzag)
 
 	return ld
