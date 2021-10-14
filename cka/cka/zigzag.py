@@ -15,7 +15,6 @@ BURGER_MAX_LIN_VEL = 0.22
 BURGER_MAX_ANG_VEL = 2.84
 LIN_VEL_STEP_SIZE = 0.01
 ANG_VEL_STEP_SIZE = 0.1
-TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
 
 class zigzag(Node):
 	def __init__(self) -> None:
