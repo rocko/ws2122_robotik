@@ -55,14 +55,14 @@ class zigzag(Node):
 		# Sensor data is contained in "msg"
 		self.scan_ranges = msg.ranges  # Update sensor data
 		self.init_scan_state = True
-		self.get_logger().info("scan_callback %s" % msg)
+		#self.get_logger().info("scan_callback %s" % msg)
 
 	def cmd_vel_raw_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
 		# Change is contained in "msg"
 		self.velocity[0] = msg.linear.x  # Update linear velocity
 		self.velocity[1] = msg.angular.z  # Update angular velocity
-		self.get_logger().info("cmd_vel_raw_callback %s" % msg)
+		#self.get_logger().info("cmd_vel_raw_callback %s" % msg)
 
 	#def odom_callback(self, msg):
 	#	self.last_pose[0] = msg.pose.pose.position.x
@@ -74,14 +74,14 @@ class zigzag(Node):
 		if self.init_scan_state:
 			self.detect_obstacle()
 
-	'''def constrain(self, linear_velocity:float, min:float=-BURGER_MAX_LIN_VEL, max:float=BURGER_MAX_LIN_VEL) -> float:
+	def constrain(self, linear_velocity:float, min:float=-BURGER_MAX_LIN_VEL, max:float=BURGER_MAX_LIN_VEL) -> float:
 		if linear_velocity < min:
 			linear_velocity = min
 		elif linear_velocity > max:
 			linear_velocity = max
 		
 		return linear_velocity
-
+	'''
 	def speed_profile(self, cur_linear_velocity:float, new_linear_velocity:float, slope:float) -> float:
 		if new_linear_velocity > cur_linear_velocity:
 			cur_linear_velocity = min(new_linear_velocity, cur_linear_velocity + slope)
