@@ -1,5 +1,6 @@
 <sdf version='1.7'>
   <world name='default'>
+    
     <light name='sun' type='directional'>
       <cast_shadows>1</cast_shadows>
       <pose>0 0 10 0 -0 0</pose>
@@ -18,6 +19,7 @@
         <falloff>0</falloff>
       </spot>
     </light>
+    
     <model name='ground_plane'>
       <static>1</static>
       <link name='link'>
@@ -65,20 +67,25 @@
         <kinematic>0</kinematic>
       </link>
     </model>
+    
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type='adiabatic'/>
+    
     <physics type='ode'>
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
     </physics>
+    
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>
       <background>0.7 0.7 0.7 1</background>
       <shadows>1</shadows>
     </scene>
+    
     <wind/>
+    
     <spherical_coordinates>
       <surface_model>EARTH_WGS84</surface_model>
       <latitude_deg>0</latitude_deg>
@@ -86,6 +93,7 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
+    
     <model name='simple_room_model'>
       <pose>-2.63 -1.86118 0 0 -0 0</pose>
       <link name='Wall_0'>
@@ -675,6 +683,7 @@
       </link>
       <static>1</static>
     </model>
+    
     <state world_name='default'>
       <sim_time>22 645000000</sim_time>
       <real_time>22 837603517</real_time>
@@ -776,6 +785,7 @@
         <pose>0 0 10 0 -0 0</pose>
       </light>
     </state>
+    
     <gui fullscreen='0'>
       <camera name='user_camera'>
         <pose>5.08559 -6.96053 15.6366 0 1.02364 2.4962</pose>
@@ -783,5 +793,6 @@
         <projection_type>perspective</projection_type>
       </camera>
     </gui>
+
   </world>
 </sdf>
