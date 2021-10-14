@@ -23,7 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-		    'cka_zigzag = zigzag.zigzag:main'
+		    'cka_zigzag = cka.zigzag:main'
         ],
     },
 )
