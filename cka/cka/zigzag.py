@@ -15,7 +15,7 @@ from time import sleep
 class zigzag(Node):
 	def __init__(self) -> None:
 		super().__init__("zigzag node")
-        	self.get_logger().info("ZZzzzzzzzzzzzigzag")
+		self.get_logger().info("ZZzzzzzzzzzzzigzag")
 
 def main(args=None) -> None:
 	rclpy.init(args=args)
