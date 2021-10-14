@@ -1,8 +1,6 @@
 """
 This launch file should:
-- start gazebo
-- spawn a turtlebot in a world
-- start the project node    
+- run a zigzag move pattern on the real turtlebot   
 """
 
 import os
@@ -20,31 +18,15 @@ def generate_launch_description():
 	
 	config = os.path.join(get_package_share_directory("turtle_life"),"config","config.yaml")
 
-    # Declare project node
-	# TBD
-    #turtle_life_node = Node(
-	#	package="turtle_life",
-	#	executable="turtle_life_node",
-	#	parameters = [config],
-	#	output="screen",
-	#	emulate_tty=True,
-	#)
-
     # Declare gazebo start and model spawn
     # Example from turtlebot3_world.launch.py
 
-	turtlesim_node = Node(
-		package="turtlesim",
-		executable="turtlesim_node",
-		parameters=[
-			{"background_b": 200},
-			{"background_g": 200},
-			{"background_r": 200}
-		],
+	cka_tb3_zigzag = Node(
+		package="cka_tb3_zigzag",
+		executable="cka_tb3_zigzag",
 		output="screen",
 	)
 
-	#ld.add_action(turtle_life_node)
-	ld.add_action(turtlesim_node)
+	ld.add_action(cka_tb3_zigzag)
 
 	return ld
