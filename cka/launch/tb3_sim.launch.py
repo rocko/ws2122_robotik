@@ -23,7 +23,7 @@ def generate_launch_description():
     # Gazebo Params
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     #world_file_name = 'turtlebot3_houses/' + TURTLEBOT3_MODEL + '.model'
-    world_file_name = 'simple_room/' + TURTLEBOT3_MODEL + '.model'
+    world_file_name = 'simple_room_2/' + 'simple_room_2' + '.model'
     world = os.path.join(get_package_share_directory('cka_gazebo'),'worlds', world_file_name)
     launch_file_dir = os.path.join(get_package_share_directory('turtlebot3_gazebo'), 'launch')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
@@ -57,13 +57,13 @@ def generate_launch_description():
             launch_arguments={'use_sim_time': use_sim_time}.items(),
         ),
         # RVIZ Node
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', rviz_config_dir],
-            output='screen',
-        ),
+        #Node(
+        #    package='rviz2',
+        #    executable='rviz2',
+        #    name='rviz2',
+        #    arguments=['-d', rviz_config_dir],
+        #    output='screen',
+        #),
         # Turtlebot3 Fake Node
         Node(
             package="turtlebot3_fake_node",
@@ -73,9 +73,9 @@ def generate_launch_description():
         ),
 
         # ZigZagNode
-        Node(
-            package='cka',
-            executable='zigzag',
-            output='screen',
-        )
+        #Node(
+        #    package='cka',
+        #    executable='zigzag',
+        #    output='screen',
+        #)
     ])
