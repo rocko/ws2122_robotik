@@ -18,7 +18,7 @@ ANG_VEL_STEP_SIZE = 0.1
 
 class zigzag(Node):
 	def __init__(self) -> None:
-		super().__init__("zigzag node")
+		super().__init__("zigzag")
 		self.get_logger().info("ZZzzzzzzzzzzzigzag")
 		qos = QoSProfile(depth=10)
 		self.pub = self.create_publisher(Twist, 'cmd_vel', qos)
