@@ -75,7 +75,7 @@ def generate_launch_description():
         # ZigZagNode
         Node(
             package='cka',
-            executable='zigzag',
+            executable='cka_zigzag',
             output='screen',
         )
     ])
