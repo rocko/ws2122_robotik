@@ -61,7 +61,7 @@ def generate_launch_description():
             executable='rviz2',
             name='rviz2',
             arguments=['-d', rviz_config_dir],
-            output='screen'
+            output='screen',
         ),
         # Turtlebot3 Fake Node
         Node(
@@ -70,4 +70,12 @@ def generate_launch_description():
             parameters=[param_dir],
             output="screen",
         ),
+
+        # ZigZagNode
+        Node(
+            package='cka',
+            executable='cka_node_zigzag',
+            name='cka_node_zigzag',
+            output='screen',
+        )
     ])

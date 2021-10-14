@@ -3,9 +3,7 @@
 <package format="3">
   <name>cka_gazebo</name>
   <version>0.0.2</version>
-  <description>
-    Gazebo simulation package for the TurtleBot3
-  </description>
+  <description>Turtlebot 3 (Gazebo package) - WS2122</description>
   <maintainer email="ch.adolph@ostfalia.de">Christian Adolph</maintainer>
   <license>STFU</license>
   <url type="repository">https://github.com/rocko/ws2122_robotik</url>

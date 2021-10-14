@@ -2,7 +2,7 @@ import os
 from glob import glob
 from setuptools import setup
 
-package_name = 'turtlebot3_project'
+package_name = 'cka'
 
 setup(
     name=package_name,
@@ -23,7 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-		    'turtle_life_node = turtle_life.turtle_life_node:main'
+		    'cka_node_zigzag = node_zigzag.node_zigzag:main'
         ],
     },
 )

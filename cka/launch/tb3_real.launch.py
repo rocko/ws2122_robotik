@@ -16,17 +16,17 @@ TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
 def generate_launch_description():
 	ld = LaunchDescription()
 	
-	config = os.path.join(get_package_share_directory("turtle_life"),"config","config.yaml")
+	config = os.path.join(get_package_share_directory("cka"),"config","config.yaml")
 
     # Declare gazebo start and model spawn
     # Example from turtlebot3_world.launch.py
 
-	cka_tb3_zigzag = Node(
-		package="cka_tb3_zigzag",
-		executable="cka_tb3_zigzag",
+	cka_node_zigzag = Node(
+		package="cka",
+		executable="cka_node_zigzag",
 		output="screen",
 	)
 
-	ld.add_action(cka_tb3_zigzag)
+	ld.add_action(cka_node_zigzag)
 
 	return ld
