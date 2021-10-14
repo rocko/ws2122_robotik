@@ -46,7 +46,7 @@ class zigzag(Node):
 
 
 		# Sleep 5 seconds until all the shit is loaded
-		sleep(5)  # seconds
+		#sleep(5)  # seconds
 
 	# CALLBACK FUNCTIONS
 	def scan_callback(self, msg) -> None:
