@@ -23,6 +23,8 @@ class zigzag(Node):
 		qos = QoSProfile(depth=10)
 		self.pub = self.create_publisher(Twist, 'cmd_vel', qos)
 
+		self.run()
+
 	def run(self) -> None:
 
 		twist = Twist()
@@ -34,10 +36,10 @@ class zigzag(Node):
 			twist.angular.x = 0.0
 			twist.angular.y = 0.0
 			twist.angular.z = 0.0
-			sleep(0.1)
+			#sleep(0.1)
 			self.get_logger().info("publishing")
 			self.pub.publish(twist)
-			rclpy.spin_once(self)
+			#rclpy.spin_once(self)
 
 
 def main(args=None) -> None:
