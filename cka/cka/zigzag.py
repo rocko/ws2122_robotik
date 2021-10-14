@@ -54,9 +54,8 @@ class zigzag(Node):
 		# Fires up getting sensor data (continuisly)
 		# Sensor data is contained in "msg"
 		self.scan_ranges = msg.ranges  # Update sensor data
-
 		self.init_scan_state = True
-		#self.get_logger().info("scan_callback %s" % msg)
+		self.get_logger().info("scan_callback %s" % msg)
 
 	def cmd_vel_raw_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
@@ -75,10 +74,7 @@ class zigzag(Node):
 		if self.init_scan_state:
 			self.detect_obstacle()
 
-	def constrain(self, linear_velocity:float, min:float=-BURGER_MAX_LIN_VEL, max:float=BURGER_MAX_LIN_VEL) -> float:
-		'''
-		Limit input
-		'''
+	'''def constrain(self, linear_velocity:float, min:float=-BURGER_MAX_LIN_VEL, max:float=BURGER_MAX_LIN_VEL) -> float:
 		if linear_velocity < min:
 			linear_velocity = min
 		elif linear_velocity > max:
@@ -87,9 +83,6 @@ class zigzag(Node):
 		return linear_velocity
 
 	def speed_profile(self, cur_linear_velocity:float, new_linear_velocity:float, slope:float) -> float:
-		''' 
-		Accelerate or Deccelerate
-		'''
 		if new_linear_velocity > cur_linear_velocity:
 			cur_linear_velocity = min(new_linear_velocity, cur_linear_velocity + slope)
 		elif new_linear_velocity < cur_linear_velocity:
@@ -97,46 +90,28 @@ class zigzag(Node):
 		else:
 			cur_linear_velocity = new_linear_velocity
 
-		return cur_linear_velocity
+		return cur_linear_velocity'''
 
 	def detect_obstacle(self) -> None:
 		twist = Twist()  # create Twist message
 		obstacle_distance = min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
 		safety_distance = 0.3  # unit: m
 
-		# TODO: If turning skip detection part
-		# if state == "turning":
-		# else:
-		#  # if no
 		if obstacle_distance > safety_distance:
-			if self.velocity[0] < BURGER_MAX_LIN_VEL:
-				#self.get_logger().info("Robot accelerating.")
-				twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
-				#self.get_logger().info("New linear velocity is %s." % twist.linear.x)
-			else:
-				twist.linear.x = self.velocity[0]  # Dont change linear velocity
-			
+			#if self.velocity[0] < BURGER_MAX_LIN_VEL:
+			#	twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
+			#else:
+			twist.linear.x = self.velocity[0]  # Dont change linear velocity
 			twist.angular.z = self.velocity[1]  # Dont change angular velocity
-			
-
 		else:
-			# Obstacle detected: Stop turtlebot
-			# Try:
-			# Rotate 45 degrees left
-			# Rotate 90 degrees right
-			# Rotate 135 degrees left
-			# Rotate 180 degrees right
 			twist.linear.x = 0.0
 			twist.angular.z = 0.0
-			#self.get_logger().info("Obstacles are detected nearby. Robot stopped.")
-
-			#self.get_logger().info("Sleep 1 second")
-
-			#self.get_logger().info("Turn")
+			self.get_logger().info("Obstacles are detected nearby. Robot stopped.")
 
 		self.cmd_vel_pub.publish(twist)
 
-def main(args=None) -> None:
+
+def main(args=None):
 	rclpy.init(args=args)
 	
 	node = zigzag()
