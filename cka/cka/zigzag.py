@@ -28,14 +28,15 @@ class zigzag(Node):
 		twist = Twist()
 
 		while True:
-			twist.linear.x = BURGER_MAX_LIN_VEL
+			twist.linear.x = 0.11
 			twist.linear.y = 0.0
 			twist.linear.z = 0.0
 			twist.angular.x = 0.0
 			twist.angular.y = 0.0
 			twist.angular.z = 0.0
-
+			sleep(0.1)
 			self.pub.publish(twist)
+
 
 def main(args=None) -> None:
 	rclpy.init(args=args)
