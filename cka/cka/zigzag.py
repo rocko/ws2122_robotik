@@ -82,12 +82,15 @@ class zigzag(Node):
 		# else:
 		#  # if no
 		if obstacle_distance > safety_distance:
-			twist.linear.x = self.velocity[0]  # Dont change linear velocity
-			twist.angular.z = self.velocity[1]  # Dont change angular velocity
-			# Accelerate if needed
 			if twist.linear.x < BURGER_MAX_LIN_VEL:
 				self.get_logger().info("Robot accelerating.")
-				twist.linear.x = self.velocity[0] + 0.01
+				twist.linear.x = self.velocity[0] + 0.01  # Accelerate if needed
+			else:
+				twist.linear.x = self.velocity[0]  # Dont change linear velocity
+			
+			twist.angular.z = self.velocity[1]  # Dont change angular velocity
+			
+
 		else:
 			# Obstacle detected: Stop turtlebot
 			# Try:
