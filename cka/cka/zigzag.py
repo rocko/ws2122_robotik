@@ -71,12 +71,36 @@ class zigzag(Node):
 	#	self.init_odom_state = True
 
 	def update_callback(self) -> None:
-		if self.init_scan_state is True:
+		if self.init_scan_state:
 			self.detect_obstacle()
 
+	def constrain(self, linear_velocity:float, min:float=-BURGER_MAX_LIN_VEL, max:float=BURGER_MAX_LIN_VEL) -> float:
+		'''
+		Limit input
+		'''
+		if linear_velocity < min:
+			linear_velocity = min
+		elif linear_velocity > max:
+			linear_velocity = max
+		
+		return linear_velocity
+
+	def speed_profile(self, cur_linear_velocity:float, new_linear_velocity:float, slope:float) -> float:
+		''' 
+		Accelerate or Deccelerate
+		'''
+		if new_linear_velocity > cur_linear_velocity:
+			cur_linear_velocity = min(new_linear_velocity, cur_linear_velocity + slope)
+		elif new_linear_velocity < cur_linear_velocity:
+			cur_linear_velocity = max(new_linear_velocity, cur_linear_velocity - slope)
+		else:
+			cur_linear_velocity = new_linear_velocity
+
+		return cur_linear_velocity
+
 	def detect_obstacle(self) -> None:
-		twist = Twist()
-		obstacle_distance = min(self.scan_ranges)
+		twist = Twist()  # create Twist message
+		obstacle_distance = min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
 		safety_distance = 0.3  # unit: m
 
 		# TODO: If turning skip detection part
@@ -84,9 +108,9 @@ class zigzag(Node):
 		# else:
 		#  # if no
 		if obstacle_distance > safety_distance:
-			if twist.linear.x < BURGER_MAX_LIN_VEL:
+			if self.velocity[0] < BURGER_MAX_LIN_VEL:
 				#self.get_logger().info("Robot accelerating.")
-				twist.linear.x = self.velocity[0] + 0.01  # Accelerate if needed
+				twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
 				#self.get_logger().info("New linear velocity is %s." % twist.linear.x)
 			else:
 				twist.linear.x = self.velocity[0]  # Dont change linear velocity
