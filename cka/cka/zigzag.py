@@ -35,6 +35,7 @@ class zigzag(Node):
 			twist.angular.y = 0.0
 			twist.angular.z = 0.0
 			sleep(0.1)
+			self.get_logger().info("publishing")
 			self.pub.publish(twist)
 
 
