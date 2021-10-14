@@ -37,6 +37,7 @@ class zigzag(Node):
 			sleep(0.1)
 			self.get_logger().info("publishing")
 			self.pub.publish(twist)
+			rclpy.spin_once(self)
 
 
 def main(args=None) -> None:
