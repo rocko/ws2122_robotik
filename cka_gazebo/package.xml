@@ -14,12 +14,8 @@
   <author email="author2@ostfalia.de">Author 1</author>
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>gazebo_ros_pkgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>nav_msgs</depend>
   <depend>rclcpp</depend>
-  <depend>sensor_msgs</depend>
-  <depend>tf2</depend>
-  <exec_depend>turtlebot3_description</exec_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
     <gazebo_ros gazebo_model_path="${prefix}/models"/>
