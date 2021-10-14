@@ -21,12 +21,12 @@ def generate_launch_description():
     # Declare gazebo start and model spawn
     # Example from turtlebot3_world.launch.py
 
-	cka_node_zigzag = Node(
+	zigzag = Node(
 		package="cka",
-		executable="cka_zigzag",
+		executable="zigzag",
 		output="screen",
 	)
 
-	ld.add_action(cka_zigzag)
+	ld.add_action(zigzag)
 
 	return ld
