@@ -32,6 +32,7 @@ class zigzag(Node):
 		self.state = 0
 		self.velocity = [0.0, 0.0]
 		self.scan_ranges = []
+		self.obstruction = [False, False, False, False]  # CCW: Front, Left, Back, Right
 		self.init_scan_state = False
 		self.init_odom_state = False
 
@@ -56,6 +57,7 @@ class zigzag(Node):
 		# Sensor data is contained in "msg"
 		self.scan_ranges = msg.ranges  # Update sensor data
 		self.init_scan_state = True
+		self.obstruction()
 		#self.get_logger().info("scan_callback %s" % msg)
 
 	def cmd_vel_raw_callback(self, msg) -> None:
@@ -88,7 +90,6 @@ class zigzag(Node):
 		
 		return velocity
 
-	
 	def speed_profile(self, cur_linear_velocity:float, new_linear_velocity:float, slope:float) -> float:
 		if new_linear_velocity > cur_linear_velocity:
 			cur_linear_velocity = min(new_linear_velocity, cur_linear_velocity + slope)
@@ -99,12 +100,27 @@ class zigzag(Node):
 
 		return cur_linear_velocity
 
+	def obstruction(self, safety_distance:float=0.3, step:int=2) -> None:
+		# front slice 315 - 45
+		# right slice 45 - 135
+		# back slice 135 - 225
+		# left slice 225 - 315
+		self.obstruction[
+			min(self.scan_ranges[:45:step]) < safety_distance or min(self.scan_ranges[315::step]), 
+			min(self.scan_ranges[45:135:step]) < safety_distance, 
+			min(self.scan_ranges[135:225:step]) < safety_distance, 
+			min(self.scan_ranges[225:315:step]) < safety_distance
+		]
+
+
+
 	def detect_obstacle(self) -> None:
 		twist = Twist()  # create Twist message
 		obstacle_distance = self.scan_ranges[0]  # min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
 		safety_distance = 0.3  # unit: m
 
-		if obstacle_distance > safety_distance:
+		#if obstacle_distance > safety_distance:
+		if self.obstruction[0]:
 			if self.velocity[0] < BURGER_MAX_LIN_VEL:
 				twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
 				twist.angular.z = self.velocity[1]  # Dont change angular velocity
