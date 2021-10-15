@@ -5,6 +5,16 @@ This launch file should:
 
 FOR SIMULATION PURPOSES ONLY!
 
+
+LAUNCH ORDER
+
+- gazebo 
+- robot_state_publisher 
+- cartographer
+- rviz
+- manipulation
+
+
 """
 
 import os
