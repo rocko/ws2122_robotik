@@ -98,11 +98,12 @@ class zigzag(Node):
 		safety_distance = 0.3  # unit: m
 
 		if obstacle_distance > safety_distance:
-			#if self.velocity[0] < BURGER_MAX_LIN_VEL:
-			#	twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
-			#else:
-			twist.linear.x = self.velocity[0]  # Dont change linear velocity
-			twist.angular.z = self.velocity[1]  # Dont change angular velocity
+			if self.velocity[0] < BURGER_MAX_LIN_VEL:
+				twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
+				twist.angular.z = self.velocity[1]  # Dont change angular velocity
+			else:
+				twist.linear.x = self.velocity[0]  # Dont change linear velocity
+				twist.angular.z = self.velocity[1]  # Dont change angular velocity
 		else:
 			twist.linear.x = 0.0
 			twist.angular.z = 0.0
