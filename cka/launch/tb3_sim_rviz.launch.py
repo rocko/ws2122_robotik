@@ -25,6 +25,7 @@ from launch.actions import IncludeLaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from launch.actions import TimerAction
 from launch_ros.actions import Node
 
 TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']  # Should be BURGER
@@ -59,60 +60,70 @@ def generate_launch_description():
 		# Gazebo Client
         IncludeLaunchDescription(PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')),),
 
-		# Robot State Publisher Node
-        #IncludeLaunchDescription(
-        #    PythonLaunchDescriptionSource([launch_file_dir, '/robot_state_publisher.launch.py']),
-        #    launch_arguments={'use_sim_time': use_sim_time}.items(),
-        #),
+        # LAUNCH ARGS
+        # Robot State Publisher
         DeclareLaunchArgument('use_sim_time', default_value='false', description='Use simulation (Gazebo) clock if true'),
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}],
-            arguments=[urdf]
-        ),
-
-        # Cartographer Node
+        # Cartographer
         DeclareLaunchArgument('cartographer_config_dir', default_value=cartographer_config_dir, description='Full path to config file to load'),
         DeclareLaunchArgument('configuration_basename', default_value=configuration_basename, description='Name of lua file for cartographer'),
         #DeclareLaunchArgument('use_sim_time', default_value='false', description='Use simulation (Gazebo) clock if true'),
-        Node(
-            package='cartographer_ros',
-            executable='cartographer_node',
-            name='cartographer_node',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}],
-            arguments=['-configuration_directory', cartographer_config_dir,'-configuration_basename', configuration_basename]
-        ),    
-
-        # RVIZ Node
+        # RVIZ
         DeclareLaunchArgument('resolution', default_value=resolution, description='Resolution of a grid cell in the published occupancy grid'),
         DeclareLaunchArgument('publish_period_sec', default_value=publish_period_sec, description='OccupancyGrid publishing period'),
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([cartographer_launch_file_dir, '/occupancy_grid.launch.py']),
-            launch_arguments={'use_sim_time': use_sim_time, 'resolution': resolution, 'publish_period_sec': publish_period_sec}.items(),
+
+        # Timed Nodes
+        TimerAction(
+            period=10,
+            actions=[
+                # Robot State Publisher Node
+                Node(
+                    package='robot_state_publisher',
+                    executable='robot_state_publisher',
+                    name='robot_state_publisher',
+                    output='screen',
+                    parameters=[{'use_sim_time': use_sim_time}],
+                    arguments=[urdf]
+                ),
+                # Turtlebot3 Fake Node
+                Node(
+                    package="turtlebot3_fake_node",
+                    executable="turtlebot3_fake_node",
+                    parameters=[param_dir],
+                    output="screen",
+                ),
+                # Cartographer
+                Node(
+                    package='cartographer_ros',
+                    executable='cartographer_node',
+                    name='cartographer_node',
+                    output='screen',
+                    parameters=[{'use_sim_time': use_sim_time}],
+                    arguments=['-configuration_directory', cartographer_config_dir,'-configuration_basename', configuration_basename]
+                ),
+                # Cartographer Occupancy
+                Node(
+                    package='cartographer_ros',
+                    executable='occupancy_grid_node',
+                    name='occupancy_grid_node',
+                    output='screen',
+                    parameters=[{'use_sim_time': use_sim_time}],
+                    arguments=['-resolution', resolution, '-publish_period_sec', publish_period_sec]
+                ),
+                # RVIZ
+                Node(
+                    package='rviz2',
+                    executable='rviz2',
+                    name='rviz2',
+                    arguments=['-d', rviz_config_dir],
+                    parameters=[{'use_sim_time': use_sim_time}],
+                    output='screen',
+                ),
+                # ZigZagNode
+                Node(
+                    package='cka',
+                    executable='zigzag',
+                    output='screen',
+                )
+            ]
         ),
-        Node(
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d', rviz_config_dir],
-            parameters=[{'use_sim_time': use_sim_time}],
-            output='screen',
-        ),
-        # Turtlebot3 Fake Node
-        Node(
-            package="turtlebot3_fake_node",
-            executable="turtlebot3_fake_node",
-            parameters=[param_dir],
-            output="screen",
-        ),
-        # ZigZagNode
-        Node(
-            package='cka',
-            executable='zigzag',
-            output='screen',
-        )
     ])
