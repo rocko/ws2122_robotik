@@ -11,6 +11,7 @@ from nav_msgs.msg import Odometry
 import random
 import math
 from time import sleep
+import numpy as np
 
 # max Angular and Linear velocities
 BURGER_MAX_LIN_VEL = 0.22
@@ -25,22 +26,22 @@ class zigzag(Node):
 		qos = QoSProfile(depth=10)
 
 		# Initialise variables
-		#self.odometry = Odometry()
-		#self.last_pose = [0.0, 0.0, 0.0]
-		#self.goal_pose = [0.0, 0.0, 0.0]
+		self.odometry = Odometry()
+		self.last_pose = [0.0, 0.0, 0.0]
+		self.goal_pose = [0.0, 0.0, 0.0]
 		self.state = 0
 		self.velocity = [0.0, 0.0]
 		self.scan_ranges = []
 		self.init_scan_state = False
-		#self.init_odom_state = False
+		self.init_odom_state = False
 
 		# Initialise publishers
 		self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', qos)
 		
 		# Initialise subscribers
 		self.scan_sub = self.create_subscription(LaserScan, '/scan', self.scan_callback, qos_profile=qos_profile_sensor_data)
-		self.cmd_vel_raw_sub = self.create_subscription(Twist, '/cmd_vel_raw', self.cmd_vel_raw_callback, qos)
-		#self.odom_sub = self.create_subscription(Odometry, 'odom', self.odom_callback, qos)       
+		self.cmd_vel_raw_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_raw_callback, qos)
+		self.odom_sub = self.create_subscription(Odometry, 'odom', self.odom_callback, qos)       
 		# Initialise timers
 		self.update_timer = self.create_timer(0.010, self.update_callback)
 
@@ -64,23 +65,29 @@ class zigzag(Node):
 		self.velocity[1] = msg.angular.z  # Update angular velocity
 		self.get_logger().info("cmd_vel_raw_callback %s" % msg)
 
-	#def odom_callback(self, msg):
-	#	self.last_pose[0] = msg.pose.pose.position.x
-	#	self.last_pose[1] = msg.pose.pose.position.y
-	#	_, _, self.last_pose[2] = self.euler_from_quaternion(msg.pose.pose.orientation)
-	#	self.init_odom_state = True
+	def odom_callback(self, msg):
+		self.last_pose[0] = msg.pose.pose.position.x
+		self.last_pose[1] = msg.pose.pose.position.y
+		# quaternion bullshit convert
+		x = msg.pose.pose.orientation.x
+		y = msg.pose.pose.orientation.y
+		z = msg.pose.pose.orientation.z
+		w = msg.pose.pose.orientation.w
+		self.last_pose[2] = np.arctan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
+		self.init_odom_state = True
 
 	def update_callback(self) -> None:
 		if self.init_scan_state:
 			self.detect_obstacle()
 
-	def constrain(self, linear_velocity:float, min:float=-BURGER_MAX_LIN_VEL, max:float=BURGER_MAX_LIN_VEL) -> float:
-		if linear_velocity < min:
-			linear_velocity = min
-		elif linear_velocity > max:
-			linear_velocity = max
+	def constrain(self, velocity:float, min:float, max:float) -> float:
+		if velocity < min:
+			velocity = min
+		elif velocity > max:
+			velocity = max
 		
-		return linear_velocity
+		return velocity
+
 	
 	def speed_profile(self, cur_linear_velocity:float, new_linear_velocity:float, slope:float) -> float:
 		if new_linear_velocity > cur_linear_velocity:
@@ -94,20 +101,27 @@ class zigzag(Node):
 
 	def detect_obstacle(self) -> None:
 		twist = Twist()  # create Twist message
-		obstacle_distance = min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
+		obstacle_distance = self.scan_ranges[0]  # min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
 		safety_distance = 0.3  # unit: m
 
 		if obstacle_distance > safety_distance:
 			if self.velocity[0] < BURGER_MAX_LIN_VEL:
-				twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
+				twist.linear.x = self.speed_profile(self.velocity[0], self.constrain_linear(self.velocity[0] + LIN_VEL_STEP_SIZE, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
 				twist.angular.z = self.velocity[1]  # Dont change angular velocity
 			else:
 				twist.linear.x = self.velocity[0]  # Dont change linear velocity
-				twist.angular.z = self.velocity[1]  # Dont change angular velocity
+				twist.angular.z = 0.0  # self.velocity[1]  # Dont change angular velocity
 		else:
-			twist.linear.x = 0.0
-			twist.angular.z = 0.0
 			self.get_logger().info("Obstacles are detected nearby. Robot stopped.")
+			twist.linear.x = 0.0
+			# Obstructed in front?
+			#if obstacle_distance < safety_distance:
+			# Turn until obstruction in fron is no longer present
+			twist.angular.z = self.speed_profile(self.velocity[0], self.constrain_linear(self.velocity[0] + LIN_VEL_STEP_SIZE, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL), (LIN_VEL_STEP_SIZE / 2.0))
+		
+			
+
+
 
 		self.cmd_vel_pub.publish(twist)
 
