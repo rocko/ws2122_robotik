@@ -57,15 +57,15 @@ class zigzag(Node):
 		# Sensor data is contained in "msg"
 		self.scan_ranges = msg.ranges  # Update sensor data
 		self.init_scan_state = True
-		self.get_obstruction()
-		#self.get_logger().info("scan_callback %s" % msg)
+		#self.get_obstruction()
+		self.get_logger().info("scan_callback %s" % msg)
 
 	def cmd_vel_raw_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
 		# Change is contained in "msg"
 		self.velocity[0] = msg.linear.x  # Update linear velocity
 		self.velocity[1] = msg.angular.z  # Update angular velocity
-		self.get_logger().info("cmd_vel_raw_callback %s" % msg)
+		#self.get_logger().info("cmd_vel_raw_callback %s" % msg)
 
 	def odom_callback(self, msg):
 		self.last_pose[0] = msg.pose.pose.position.x
@@ -123,14 +123,22 @@ class zigzag(Node):
 		if self.scan_ranges[315] < safety_distance or self.scan_ranges[0] < safety_distance or self.scan_ranges[45] < safety_distance:
 			self.obstruction[0] = True
 	
+	#def debug_obstruction(self):
+	#
+	#	self.get_logger().info("cmd_vel_raw_callback %s" % msg)
 
 	def detect_obstacle(self) -> None:
 		twist = Twist()  # create Twist message
-		#obstacle_distance = self.scan_ranges[0]  # min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
-		#safety_distance = 0.3  # unit: m
+		obstacle_distance = self.scan_ranges[0]  # min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
+		safety_distance = 0.3  # unit: m
 
-		#if obstacle_distance > safety_distance:
-		if not self.obstruction[0]:
+		if obstacle_distance > safety_distance:
+			twist.linear.x = self.velocity[0]
+			twist.angular.z = self.velocity[1]
+		else:
+			twist.linear.x = 0.0
+			twist.angular.z = self.velocity[1]			
+		'''if not self.obstruction[0]:
 			if self.velocity[0] < BURGER_MAX_LIN_VEL:
 				twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
 				twist.angular.z = self.velocity[1]  # Dont change angular velocity
@@ -143,8 +151,8 @@ class zigzag(Node):
 			# Obstructed in front?
 			#if obstacle_distance < safety_distance:
 			# Turn until obstruction in fron is no longer present
-			twist.angular.z = self.speed_profile(self.velocity[1], self.constrain(self.velocity[1] + ANG_VEL_STEP_SIZE, -BURGER_MAX_ANG_VEL, BURGER_MAX_ANG_VEL), (ANG_VEL_STEP_SIZE / 2.0))
-		
+			##twist.angular.z = self.speed_profile(self.velocity[1], self.constrain(self.velocity[1] + ANG_VEL_STEP_SIZE, -BURGER_MAX_ANG_VEL, BURGER_MAX_ANG_VEL), (ANG_VEL_STEP_SIZE / 2.0))
+		'''
 			
 
 
