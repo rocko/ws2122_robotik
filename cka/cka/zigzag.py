@@ -35,11 +35,11 @@ class zigzag(Node):
 		#self.init_odom_state = False
 
 		# Initialise publishers
-		self.cmd_vel_pub = self.create_publisher(Twist, 'cmd_vel', qos)
+		self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', qos)
 		
 		# Initialise subscribers
-		self.scan_sub = self.create_subscription(LaserScan, 'scan', self.scan_callback, qos_profile=qos_profile_sensor_data)
-		self.cmd_vel_raw_sub = self.create_subscription(Twist, 'cmd_vel_raw', self.cmd_vel_raw_callback, qos)
+		self.scan_sub = self.create_subscription(LaserScan, '/scan', self.scan_callback, qos_profile=qos_profile_sensor_data)
+		self.cmd_vel_raw_sub = self.create_subscription(Twist, '/cmd_vel_raw', self.cmd_vel_raw_callback, qos)
 		#self.odom_sub = self.create_subscription(Odometry, 'odom', self.odom_callback, qos)       
 		# Initialise timers
 		self.update_timer = self.create_timer(0.010, self.update_callback)
