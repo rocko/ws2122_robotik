@@ -76,21 +76,21 @@ def generate_launch_description():
             period=10.0,
             actions=[
                 # Robot State Publisher Node
-                Node(
-                    package='robot_state_publisher',
-                    executable='robot_state_publisher',
-                    name='robot_state_publisher',
-                    output='screen',
-                    parameters=[{'use_sim_time': use_sim_time}],
-                    arguments=[urdf]
-                ),
+                #Node(
+                #    package='robot_state_publisher',
+                #    executable='robot_state_publisher',
+                #    name='robot_state_publisher',
+                #    output='screen',
+                #    parameters=[{'use_sim_time': use_sim_time}],
+                #    arguments=[urdf]
+                #),
                 # Turtlebot3 Fake Node
-                Node(
-                    package="turtlebot3_fake_node",
-                    executable="turtlebot3_fake_node",
-                    parameters=[param_dir],
-                    output="screen",
-                ),
+                #Node(
+                #    package="turtlebot3_fake_node",
+                #    executable="turtlebot3_fake_node",
+                #    parameters=[param_dir],
+                #    output="screen",
+                #),
                 # Cartographer
                 Node(
                     package='cartographer_ros',
@@ -119,11 +119,11 @@ def generate_launch_description():
                     output='screen',
                 ),
                 # ZigZagNode
-                Node(
-                    package='cka',
-                    executable='zigzag',
-                    output='screen',
-                )
+                #Node(
+                #    package='cka',
+                #    executable='zigzag',
+                #    output='screen',
+                #)
             ]
         ),
     ])
