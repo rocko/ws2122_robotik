@@ -57,7 +57,7 @@ class zigzag(Node):
 		# Sensor data is contained in "msg"
 		self.scan_ranges = msg.ranges  # Update sensor data
 		self.init_scan_state = True
-		self.obstruction()
+		self.get_obstruction()
 		#self.get_logger().info("scan_callback %s" % msg)
 
 	def cmd_vel_raw_callback(self, msg) -> None:
@@ -100,7 +100,7 @@ class zigzag(Node):
 
 		return cur_linear_velocity
 
-	def obstruction(self, safety_distance:float=0.3, step:int=2) -> None:
+	def get_obstruction(self, safety_distance:float=0.3, step:int=2) -> None:
 		# front slice 315 - 45
 		# right slice 45 - 135
 		# back slice 135 - 225
