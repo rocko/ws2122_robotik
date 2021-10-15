@@ -52,7 +52,7 @@ def generate_launch_description():
     configuration_basename = LaunchConfiguration('configuration_basename', default='turtlebot3_lds_2d.lua')
     turtlebot3_cartographer_prefix = get_package_share_directory('turtlebot3_cartographer')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(turtlebot3_cartographer_prefix, 'config'))
-    cartographer_launch_file_dir = os.path.join(get_package_share_directory('turtlebot3_cartographer'), 'launch')
+    #cartographer_launch_file_dir = os.path.join(get_package_share_directory('turtlebot3_cartographer'), 'launch')
 
     return LaunchDescription([
 		# Gazebo Server
