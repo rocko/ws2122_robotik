@@ -81,7 +81,7 @@ class zigzag(Node):
 			linear_velocity = max
 		
 		return linear_velocity
-	'''
+	
 	def speed_profile(self, cur_linear_velocity:float, new_linear_velocity:float, slope:float) -> float:
 		if new_linear_velocity > cur_linear_velocity:
 			cur_linear_velocity = min(new_linear_velocity, cur_linear_velocity + slope)
@@ -90,7 +90,7 @@ class zigzag(Node):
 		else:
 			cur_linear_velocity = new_linear_velocity
 
-		return cur_linear_velocity'''
+		return cur_linear_velocity
 
 	def detect_obstacle(self) -> None:
 		twist = Twist()  # create Twist message
