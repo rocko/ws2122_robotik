@@ -67,13 +67,13 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=[urdf]),        
         # RVIZ Node
-        #Node(
-        #    package='rviz2',
-        #    executable='rviz2',
-        #    name='rviz2',
-        #    arguments=['-d', rviz_config_dir],
-        #    output='screen',
-        #),
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', rviz_config_dir],
+            output='screen',
+        ),
         # Turtlebot3 Fake Node
         Node(
             package="turtlebot3_fake_node",
