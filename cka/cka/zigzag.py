@@ -111,14 +111,17 @@ class zigzag(Node):
 		#	min(self.scan_ranges[135:225:step]) < safety_distance, 
 		#	min(self.scan_ranges[225:315:step]) < safety_distance
 		#]
-		if min(self.scan_ranges[:45:step]) < safety_distance or min(self.scan_ranges[315::step]):
+		#if min(self.scan_ranges[:45:step]) < safety_distance or min(self.scan_ranges[315::step]):
+		#	self.obstruction[0] = True
+		#if min(self.scan_ranges[45:135:step]) < safety_distance:
+		#	self.obstruction[1] = True
+		#if min(self.scan_ranges[135:225:step]) < safety_distance:
+		#	self.obstruction[2] = True
+		#if min(self.scan_ranges[225:315:step]) < safety_distance:
+		#	self.obstruction[3] = True
+
+		if self.scan_ranges[315] < safety_distance or self.scan_ranges[0] < safety_distance or self.scan_ranges[45] < safety_distance:
 			self.obstruction[0] = True
-		if min(self.scan_ranges[45:135:step]) < safety_distance:
-			self.obstruction[1] = True
-		if min(self.scan_ranges[135:225:step]) < safety_distance:
-			self.obstruction[2] = True
-		if min(self.scan_ranges[225:315:step]) < safety_distance:
-			self.obstruction[3] = True
 	
 
 	def detect_obstacle(self) -> None:
