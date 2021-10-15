@@ -126,11 +126,11 @@ class zigzag(Node):
 
 	def detect_obstacle(self) -> None:
 		twist = Twist()  # create Twist message
-		obstacle_distance = self.scan_ranges[0]  # min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
-		safety_distance = 0.3  # unit: m
+		#obstacle_distance = self.scan_ranges[0]  # min(self.scan_ranges)  # detect the closest detected range to any object within 30 cm
+		#safety_distance = 0.3  # unit: m
 
 		#if obstacle_distance > safety_distance:
-		if self.obstruction[0]:
+		if not self.obstruction[0]:
 			if self.velocity[0] < BURGER_MAX_LIN_VEL:
 				twist.linear.x = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + LIN_VEL_STEP_SIZE, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL), (LIN_VEL_STEP_SIZE / 2.0))  # Accelerate if needed
 				twist.angular.z = self.velocity[1]  # Dont change angular velocity
