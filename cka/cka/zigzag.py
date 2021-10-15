@@ -143,7 +143,7 @@ class zigzag(Node):
 			# Obstructed in front?
 			#if obstacle_distance < safety_distance:
 			# Turn until obstruction in fron is no longer present
-			twist.angular.z = self.speed_profile(self.velocity[0], self.constrain(self.velocity[0] + ANG_VEL_STEP_SIZE, -BURGER_MAX_ANG_VEL, BURGER_MAX_ANG_VEL), (ANG_VEL_STEP_SIZE / 2.0))
+			twist.angular.z = self.speed_profile(self.velocity[1], self.constrain(self.velocity[1] + ANG_VEL_STEP_SIZE, -BURGER_MAX_ANG_VEL, BURGER_MAX_ANG_VEL), (ANG_VEL_STEP_SIZE / 2.0))
 		
 			
 
