@@ -73,7 +73,7 @@ def generate_launch_description():
 
         # Timed Nodes
         TimerAction(
-            period=10,
+            period=10.0,
             actions=[
                 # Robot State Publisher Node
                 Node(
