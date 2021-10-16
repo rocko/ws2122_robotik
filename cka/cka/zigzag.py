@@ -136,11 +136,11 @@ class zigzag(Node):
 					self.previous_pose = self.current_pose					
 					self.state = STATE.TURN_RIGHT.value  # Turn right
 	
-			elif self.state == STATE.FORWARD.value:  # Drive forwards
+			if self.state == STATE.FORWARD.value:  # Drive forwards
 				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
 				self.state = STATE.SCAN.value
 
-			elif self.state == STATE.TURN_LEFT.value:  # Turn Left State
+			if self.state == STATE.TURN_LEFT.value:  # Turn Left State
 				self.get_logger().info("Prev Pose %s" % self.previous_pose)
 				self.get_logger().info("Cur Pose %s" % self.current_pose)
 				self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
@@ -150,7 +150,7 @@ class zigzag(Node):
 				else:
 					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.ANGULAR.value)  # Keep turning
 			
-			elif self.state == STATE.TURN_RIGHT.value:  # Turn Right State
+			if self.state == STATE.TURN_RIGHT.value:  # Turn Right State
 				self.get_logger().info("Prev Pose %s" % self.previous_pose)
 				self.get_logger().info("Cur Pose %s" % self.current_pose)
 				self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
@@ -158,8 +158,8 @@ class zigzag(Node):
 					self.state = STATE.SCAN.value
 				else:
 					self.update_cmd_vel(VELOCITY.STOP.value, -VELOCITY.ANGULAR.value)
-			else:
-				self.state = STATE.SCAN.value
+			#else:
+			#	self.state = STATE.SCAN.value
 
 	def update_cmd_vel(self, lin_velocity, ang_velocity) -> None:
 		twist = Twist()
