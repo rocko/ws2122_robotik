@@ -111,13 +111,18 @@ class zigzag(Node):
 			
 			# Statemachine
 			if self.state == STATE.SCAN.value:  # Is looking for new direction ?
+				self.get_logger().info("Scanning")
+				self.get_logger().info("State 0")
 				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] > .7:  # Check if obstacle in front
+					self.get_logger().info("Nothing in front")
 					# Noting in front
 					if self.scan_ranges[SCAN_DIRECTION.LEFT.value] < .6:  # Check if obstacle to the left
+						self.get_logger().info("Obstacle to left")
 						self.previous_pose = self.current_pose
 						# Turn right
 						self.state = STATE.TURN_RIGHT.value
 					elif self.scan_ranges[SCAN_DIRECTION.RIGHT.value] < .6:  # Check if obstacle to the right
+						self.get_logger().info("Obstacle to right")
 						self.previous_pose = self.current_pose
 						# Turn left
 						self.state = STATE.TURN_LEFT.value
@@ -133,14 +138,17 @@ class zigzag(Node):
 					self.state = 3
 	
 			elif self.state == STATE.FORWARD.value:  # Drive forwards
+				self.get_logger().info("Going forward")
 				self.update_cmd_vel(.0, .0)
 
 			elif self.state == STATE.TURN_LEFT.value:  # Turn Left State
+				self.get_logger().info("Turning left")
 				if math.abs(self.previous_pose[2] - self.current_pose[2]) >= 0.5:  # Check if robot has turned away enough # 30 degrees rad
 					self.state = STATE.SCAN.value
 				else:
 					self.update_cmd_vel(.0, -.2)  # Keep turning
 			elif self.state == STATE.TURN_RIGHT.value:  # Turn Right State
+				self.get_logger().info("Turning right")
 				if math.abs(self.previous_pose[2] - self.current_pose[2]) >= .5:
 					self.state = STATE.SCAN.value
 				else:
