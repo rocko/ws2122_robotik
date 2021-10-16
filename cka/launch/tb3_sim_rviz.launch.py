@@ -145,11 +145,11 @@ def generate_launch_description():
             period=2.0,
             actions=[
                 # ZigZagNode
-                #Node(
-                #    package='cka',
-                #    executable='zigzag',
-                #    output='screen',
-                #) 
+                Node(
+                    package='cka',
+                    executable='zigzag',
+                    output='screen',
+                ) 
             ]
         ),
 
