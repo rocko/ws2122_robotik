@@ -144,6 +144,10 @@ class zigzag(Node):
 
 			elif self.state == STATE.TURN_LEFT.value:  # Turn Left State
 				self.get_logger().info("Turning left")
+				self.get_logger().info("Prev Pose %s" % self.previous_pose[2])
+				self.get_logger().info("Cur Pose %s" % self.current_pose[2])
+				self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
+				
 				if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:  # Check if robot has turned away enough # 30 degrees rad
 					self.state = STATE.SCAN.value
 				else:
@@ -151,6 +155,9 @@ class zigzag(Node):
 			
 			elif self.state == STATE.TURN_RIGHT.value:  # Turn Right State
 				self.get_logger().info("Turning right")
+				self.get_logger().info("Prev Pose %s" % self.previous_pose[2])
+				self.get_logger().info("Cur Pose %s" % self.current_pose[2])
+				self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
 				if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:
 					self.state = STATE.SCAN.value
 				else:
