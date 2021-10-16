@@ -67,7 +67,7 @@ class zigzag(Node):
 		self.cmd_vel_raw_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, qos)
 		self.odom_sub = self.create_subscription(Odometry, 'odom', self.odom_callback, qos)       
 		# Initialise timers
-		self.update_timer = self.create_timer(0.5, self.update_callback)
+		self.update_timer = self.create_timer(0.01, self.update_callback)  
 
 
 		# Sleep 5 seconds until all the shit is loaded
@@ -79,7 +79,7 @@ class zigzag(Node):
 		# Fires up getting sensor data (continuisly)
 		# Sensor data is contained in "msg"
 		# self.scan_ranges = msg.ranges  # Update sensor data
-		scan_angles = [0, 30, 330]
+		scan_angles = [0, 90, 270]
 		for i in range(len(scan_angles)):
 			angle = scan_angles[i]  # 0, 30, 330 
 			distance_at_angle = msg.ranges[angle]
@@ -115,51 +115,52 @@ class zigzag(Node):
 		if self.init_scan_state and self.init_odom_state:
 			self.get_logger().info("STATE %s" % self.state)
 			# Statemachine
-			if self.state == STATE.SCAN.value:  # Is looking for new direction ?
+			if self.state == 0:  # Is looking for new direction ?
 				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] > .7:  # Check if obstacle in front
 					self.get_logger().info("Nothing in front")
 					# Noting in front
 					if self.scan_ranges[SCAN_DIRECTION.LEFT.value] < .6:  # Check if obstacle to the left
 						self.get_logger().info("Obstacle to left")
 						self.previous_pose = self.current_pose
-						self.state = STATE.TURN_RIGHT.value  # Turn right
+						self.state = 3  # Turn right
 					elif self.scan_ranges[SCAN_DIRECTION.RIGHT.value] < .6:  # Check if obstacle to the right
 						self.get_logger().info("Obstacle to right")
 						self.previous_pose = self.current_pose
-						self.state = STATE.TURN_LEFT.value  # Turn left
+						self.state = 2  # Turn left
 					else:
 						# Drive forwards
-						self.state = STATE.FORWARD.value
+						self.state = 1
 
 				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] < .7: 	# Check if obstacle in front
 					self.get_logger().info("Obstacle in front")
 					self.previous_pose = self.current_pose					
-					self.state = STATE.TURN_RIGHT.value  # Turn right
+					self.state = 3  # Turn right
 	
-			if self.state == STATE.FORWARD.value:  # Drive forwards
+			if self.state == 1:  # Drive forwards
 				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
-				self.state = STATE.SCAN.value
+				self.state = 0
 
-			if self.state == STATE.TURN_LEFT.value:  # Turn Left State
+			if self.state == 2:  # Turn Left State
 				self.get_logger().info("Prev Pose %s" % self.previous_pose)
 				self.get_logger().info("Cur Pose %s" % self.current_pose)
 				self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
 				
 				if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:  # Check if robot has turned away enough # 30 degrees rad
-					self.state = STATE.SCAN.value
+					self.state = 0
 				else:
 					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.ANGULAR.value)  # Keep turning
 			
-			if self.state == STATE.TURN_RIGHT.value:  # Turn Right State
+			if self.state == 3:  # Turn Right State
 				self.get_logger().info("Prev Pose %s" % self.previous_pose)
 				self.get_logger().info("Cur Pose %s" % self.current_pose)
 				self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
+
 				if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:
-					self.state = STATE.SCAN.value
+					self.state = 0
 				else:
 					self.update_cmd_vel(VELOCITY.STOP.value, -VELOCITY.ANGULAR.value)
 			#else:
-			#	self.state = STATE.SCAN.value
+			#	self.state = 0
 
 	def update_cmd_vel(self, lin_velocity, ang_velocity) -> None:
 		twist = Twist()
