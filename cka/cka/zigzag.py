@@ -91,20 +91,30 @@ class zigzag(Node):
 		# self.get_logger().info("scan_callback %s" % msg)
 		# self.get_logger().info("scan_callback %s" % self.scan_ranges)
 		self.scan_ranges = msg.ranges[::self.scan_resolution]
-		self.obstacle_avoidance = min(self.scan_ranges) < self.safety_distance
+		
+		minimum = min(self.scan_ranges)
+		if minimum < self.safety_distance:
+			self.obstacle_avoidance = True
+			obstruction_index = self.scan_ranges.index(minimum)
+			evasion_index = (obstruction_index + (int) (len(self.scan_ranges) / 2)) % len(self.scan_ranges)
+			evasion_angle = self.scan_angles[evasion_index]
+			self.evasion_angle = evasion_angle * (math.pi / 180.0)
+		else:
+			self.obstacle_avoidance = False
+			self.evasion_angle = 0.0
 
 		# TODO: Filter infinty
 		# Find index with minimum value
-		minimum = min(self.scan_ranges)
+		#minimum = min(self.scan_ranges)
 		# obstruction_angle = self.scan_angles[self.scan_ranges.index(min(self.scan_ranges))]
-		obstruction_index = self.scan_ranges.index(minimum)
+		
 		# Find index with maximum value
 		# maximum = max(self.scan_ranges)
 		#evasion_angle = self.scan_angles[self.scan_ranges.index(max(self.scan_ranges))]
-		evasion_index = (obstruction_index + (int) (len(self.scan_angles) / 2)) % len(self.scan_angles)
-		evasion_angle = self.scan_angles.index(evasion_index)
+		
+		
 		#self.evasion_angle = evasion_angle * (math.pi / 180.0)
-		self.evasion_angle = evasion_angle * (math.pi / 180.0)
+		
 
 		self.init_scan_state = True
 
