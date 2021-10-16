@@ -180,6 +180,7 @@ class zigzag(Node):
 				pass
 
 	def turn(self, angle) -> float:
+		ang_velocity = VELOCITY.ANGULAR.value
 		if math.fabs(angle) > 0.01:
 			if angle >= math.pi:
 				ang_velocity = -VELOCITY.ANGULAR.value
