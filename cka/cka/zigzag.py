@@ -60,7 +60,7 @@ class zigzag(Node):
 		
 		# Initialise subscribers
 		self.scan_sub = self.create_subscription(LaserScan, '/scan', self.scan_callback, qos_profile=qos_profile_sensor_data)
-		self.cmd_vel_raw_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_raw_callback, qos)
+		self.cmd_vel_raw_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, qos)
 		self.odom_sub = self.create_subscription(Odometry, 'odom', self.odom_callback, qos)       
 		# Initialise timers
 		self.update_timer = self.create_timer(0.010, self.update_callback)
@@ -88,7 +88,7 @@ class zigzag(Node):
 		self.get_logger().info("scan_callback %s" % msg)
 		self.get_logger().info("scan_callback %s" % self.scan_ranges)
 
-	def cmd_vel_raw_callback(self, msg) -> None:
+	def cmd_vel_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
 		# Change is contained in "msg"
 		self.current_velocity[0] = msg.linear.x  # Update linear velocity
@@ -105,6 +105,7 @@ class zigzag(Node):
 		w = msg.pose.pose.orientation.w
 		self.current_pose[2] = np.arctan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
 		self.init_odom_state = True
+		self.get_logger().info("odom_callback %s" % msg)
 
 	def update_callback(self) -> None:
 		if self.init_scan_state and self.init_odom_state:
