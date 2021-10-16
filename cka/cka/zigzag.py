@@ -67,7 +67,7 @@ class zigzag(Node):
 		self.cmd_vel_raw_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, qos)
 		self.odom_sub = self.create_subscription(Odometry, 'odom', self.odom_callback, qos)       
 		# Initialise timers
-		self.update_timer = self.create_timer(0.010, self.update_callback)
+		self.update_timer = self.create_timer(0.1, self.update_callback)
 
 
 		# Sleep 5 seconds until all the shit is loaded
