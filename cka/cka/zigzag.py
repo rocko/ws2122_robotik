@@ -64,7 +64,7 @@ class zigzag(Node):
 		# Sensor data is contained in "msg"
 		# self.scan_ranges = msg.ranges  # Update sensor data
 		scan_angles = [0, 30, 330]
-		for i in len(scan_angles):
+		for i in range(len(scan_angles)):
 			angle = scan_angles[i]  # 0, 30, 330 
 			distance_at_angle = msg.ranges[angle]
 			if distance_at_angle == float("inf"):
