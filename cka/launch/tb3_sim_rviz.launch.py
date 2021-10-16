@@ -51,8 +51,8 @@ def generate_launch_description():
     # RVIZ Params
     urdf_file_name = 'turtlebot3_' + TURTLEBOT3_MODEL + '.urdf'
     urdf = os.path.join(get_package_share_directory('turtlebot3_description'), 'urdf', urdf_file_name)
-    rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_fake_node'),'rviz', 'model.rviz')
-    #rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_cartographer'),'rviz', 'tb3_cartographer.rviz')
+    #rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_fake_node'),'rviz', 'model.rviz')
+    rviz_config_dir = os.path.join(get_package_share_directory('turtlebot3_cartographer'),'rviz', 'tb3_cartographer.rviz')
 
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
     resolution = LaunchConfiguration('resolution', default='0.05')
