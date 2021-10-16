@@ -53,10 +53,11 @@ class zigzag(Node):
 		# 1 - Forward
 		# 2 - Turning left
 		# 3 - Turning right
-
-		self.scan_ranges = [.0, .0, .0]
-		self.avoidance_angle = 0.174533
-
+		self.scan_resolution = 45
+		self.scan_angles = [0, 45, 90, 135, 180, 235, 270, 315]
+		self.scan_ranges = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+		self.evasion_angle = 0.0  # in rad
+		self.safety_distance = 0.4
 
 		self.init_scan_state = False
 		self.init_odom_state = False
@@ -71,9 +72,6 @@ class zigzag(Node):
 		# Initialise timers
 		self.update_timer = self.create_timer(0.01, self.update_callback)  
 
-
-		# Sleep 5 seconds until all the shit is loaded
-		#sleep(5)  # seconds
 		self.get_logger().info("ZZzzzzzzzzzzzigzag initialized.")
 
 	# CALLBACK FUNCTIONS
@@ -81,18 +79,22 @@ class zigzag(Node):
 		# Fires up getting sensor data (continuisly)
 		# Sensor data is contained in "msg"
 		# self.scan_ranges = msg.ranges  # Update sensor data
-		scan_angles = [0, 45, 315]
-		for i in range(len(scan_angles)):
-			angle = scan_angles[i]  # 0, 30, 330 
-			distance_at_angle = msg.ranges[angle]
-			if distance_at_angle == float("inf"):
-				self.scan_ranges[i] = 3.5
-			else:
-				self.scan_ranges[i] = distance_at_angle
-			
-			self.init_scan_state = True
-		self.get_logger().info("scan_callback %s" % msg)
-		self.get_logger().info("scan_callback %s" % self.scan_ranges)
+		# for i in range(len(self.scan_angles)):
+		#	angle = self.scan_angles[i]  # 0, 30, 330 
+		#	distance_at_angle = msg.ranges[angle]
+		#	if distance_at_angle == float("inf"):
+		#		self.scan_ranges[i] = 3.5
+		#	else:
+		#		self.scan_ranges[i] = distance_at_angle
+		#	
+		#	self.init_scan_state = True
+		# self.get_logger().info("scan_callback %s" % msg)
+		# self.get_logger().info("scan_callback %s" % self.scan_ranges)
+		self.scan_ranges = msg.ranges[::self.scan_resolution]
+		self.obstacle_avoidance = min(self.scan_ranges) < self.safety_distance
+		self.init_scan_state = True
+
+
 
 	def cmd_vel_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
@@ -111,11 +113,17 @@ class zigzag(Node):
 		w = msg.pose.pose.orientation.w
 		self.current_pose[2] = np.arctan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
 		self.init_odom_state = True
-		self.get_logger().info("odom_callback %s" % msg)
+		#self.get_logger().info("odom_callback %s" % msg)
 
 	def update_callback(self) -> None:
 		if self.init_scan_state and self.init_odom_state:
-			self.get_logger().info("STATE %s" % self.state)
+			if not self.obstacle_avoidance:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
+			
+			if self.obstacle_avoidance:
+				self.update_cmd_vel(VELOCITY.STOP.value, self.turn())
+
+			'''self.get_logger().info("STATE %s" % self.state)
 			# Statemachine
 			if self.state == 0:  # Is looking for new direction ?
 				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] > .4:  # Check if obstacle in front
@@ -146,9 +154,25 @@ class zigzag(Node):
 			if self.state == 3:  # Turn Right State
 				goal = self.current_pose[2] + self.avoidance_angle
 				self.update_cmd_vel(VELOCITY.STOP.value, self.turn(goal))  # Keep turning
-				self.state = 0
+				self.state = 0'''
 
-	def turn(self, angle) -> float:
+	def turn(self) -> float:
+
+		# TODO: Filter infinty
+		# Find index with minimum value
+		minimum = min(self.scan_ranges)
+		# obstruction_angle = self.scan_angles[self.scan_ranges.index(min(self.scan_ranges))]
+		obstruction_index = self.scan_angles.index(minimum)
+		# Find index with maximum value
+		# maximum = max(self.scan_ranges)
+		#evasion_angle = self.scan_angles[self.scan_ranges.index(max(self.scan_ranges))]
+		evasion_index = (obstruction_index + (int) (len(self.scan_angles) / 2)) % len(self.scan_angles)
+		evasion_angle = self.scan_angles.index(evasion_index)
+		#self.evasion_angle = evasion_angle * (math.pi / 180.0)
+		evasion_angle *= (math.pi / 180.0)
+
+		angle = self.current_pose[2] - evasion_angle
+
 		ang_velocity = VELOCITY.ANGULAR.value
 		if math.fabs(angle) > 0.01:
 			if angle >= math.pi:
