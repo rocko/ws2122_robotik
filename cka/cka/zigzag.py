@@ -76,8 +76,8 @@ class zigzag(Node):
 	def cmd_vel_raw_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
 		# Change is contained in "msg"
-		self.velocity[0] = msg.linear.x  # Update linear velocity
-		self.velocity[1] = msg.angular.z  # Update angular velocity
+		self.current_velocity[0] = msg.linear.x  # Update linear velocity
+		self.current_velocity[1] = msg.angular.z  # Update angular velocity
 		#self.get_logger().info("cmd_vel_raw_callback %s" % msg)
 
 	def odom_callback(self, msg):
