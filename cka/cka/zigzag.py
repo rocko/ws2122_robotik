@@ -133,7 +133,7 @@ class zigzag(Node):
 					self.state = 3
 	
 			elif self.state == STATE.FORWARD.value:  # Drive forwards
-				self.update_cmd_vel(.1, .0)
+				self.update_cmd_vel(.0, .0)
 
 			elif self.state == STATE.TURN_LEFT.value:  # Turn Left State
 				if math.abs(self.previous_pose[2] - self.current_pose[2]) >= 0.5:  # Check if robot has turned away enough # 30 degrees rad
