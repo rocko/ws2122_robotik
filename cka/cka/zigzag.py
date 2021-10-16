@@ -130,7 +130,7 @@ class zigzag(Node):
 					else:
 						self.state = 1  # Drive forwards
 
-				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] < .3: 	# Check if obstacle in front
+				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] < .4: 	# Check if obstacle in front
 					self.get_logger().info("Obstacle in front")				
 					self.state = 3  # Turn right
 	
