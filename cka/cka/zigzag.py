@@ -12,12 +12,24 @@ import random
 import math
 from time import sleep
 import numpy as np
+from enum import Enum
 
 # max Angular and Linear velocities
 BURGER_MAX_LIN_VEL = .22
 BURGER_MAX_ANG_VEL = 2.84
 LIN_VEL_STEP_SIZE = .01
 ANG_VEL_STEP_SIZE = .1
+
+class SCAN_DIRECTION(Enum):
+	FRONT = 0
+	LEFT = 1
+	RIGHT = 2
+
+class STATE(Enum):
+	SCAN = 0
+	FORWARD = 1
+	TURN_LEFT = 2
+	TURN_RIGHT = 2
 
 class zigzag(Node):
 	def __init__(self) -> None:
@@ -98,42 +110,43 @@ class zigzag(Node):
 		if self.init_scan_state and self.init_odom_state:
 			
 			# Statemachine
-			if self.state == 0:  # Is looking for new direction ?
-				if self.scan_ranges[0] > .7:  # Check if obstacle in front
+			if self.state == STATE.SCAN:  # Is looking for new direction ?
+				if self.scan_ranges[SCAN_DIRECTION.FRONT] > .7:  # Check if obstacle in front
 					# Noting in front
-					if self.scan_ranges[1] < .6:  # Check if obstacle to the left
+					if self.scan_ranges[SCAN_DIRECTION.LEFT] < .6:  # Check if obstacle to the left
 						self.previous_pose = self.current_pose
 						# Turn right
-						self.state = 3
-					elif self.scan_ranges[2] < .6:  # Check if obstacle to the right
+						self.state = STATE.TURN_RIGHT
+					elif self.scan_ranges[SCAN_DIRECTION.RIGHT] < .6:  # Check if obstacle to the right
 						self.previous_pose = self.current_pose
 						# Turn left
-						self.state = 2
+						self.state = STATE.TURN_LEFT
 					else:
 						# Drive forwards
-						self.state = 1
+						self.state = STATE.FORWARD
 
-				if self.scan_ranges[0] < .7: 	# Check if obstacle in front
+				if self.scan_ranges[SCAN_DIRECTION.FRONT] < .7: 	# Check if obstacle in front
+					self.get_logger().info("Obstacle in front")
 					# Something in front
 					self.previous_pose = self.current_pose					
 					# Turn right
 					self.state = 3
 	
-			elif self.state == 1:  # Drive forwards
+			elif self.state == STATE.FORWARD:  # Drive forwards
 				self.update_cmd_vel(.1, .0)
 
-			elif self.state == 2:  # Turn Left State
+			elif self.state == STATE.TURN_LEFT:  # Turn Left State
 				if math.abs(self.previous_pose[2] - self.current_pose[2]) >= 0.5:  # Check if robot has turned away enough # 30 degrees rad
-					self.state = 0
+					self.state = STATE.SCAN
 				else:
 					self.update_cmd_vel(.0, -.2)  # Keep turning
-			elif self.state == 3:  # Turn Right State
+			elif self.state == STATE.TURN_RIGHT:  # Turn Right State
 				if math.abs(self.previous_pose[2] - self.current_pose[2]) >= .5:
-					self.state = 0
+					self.state = STATE.SCAN
 				else:
 					self.update_cmd_vel(.0, .2)
 			else:
-				self.state = 0
+				self.state = STATE.SCAN
 
 	def update_cmd_vel(self, lin_velocity, ang_velocity) -> None:
 		twist = Twist()
