@@ -121,11 +121,11 @@ class zigzag(Node):
 					# Noting in front
 					if self.scan_ranges[SCAN_DIRECTION.LEFT.value] < .6:  # Check if obstacle to the left
 						self.get_logger().info("Obstacle to left")
-						self.previous_pose = self.current_pose
+						#self.previous_pose = self.current_pose
 						self.state = 3  # Turn right
 					elif self.scan_ranges[SCAN_DIRECTION.RIGHT.value] < .6:  # Check if obstacle to the right
 						self.get_logger().info("Obstacle to right")
-						self.previous_pose = self.current_pose
+						#self.previous_pose = self.current_pose
 						self.state = 2  # Turn left
 					else:
 						# Drive forwards
@@ -133,7 +133,7 @@ class zigzag(Node):
 
 				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] < .7: 	# Check if obstacle in front
 					self.get_logger().info("Obstacle in front")
-					self.previous_pose = self.current_pose					
+					#self.previous_pose = self.current_pose					
 					self.state = 3  # Turn right
 	
 			if self.state == 1:  # Drive forwards
@@ -147,9 +147,11 @@ class zigzag(Node):
 				
 				#if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:  # Check if robot has turned away enough # 30 degrees rad
 				if self.scan_ranges[SCAN_DIRECTION.RIGHT.value] > .6:
+					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
 					self.state = 0
 				else:
 					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.ANGULAR.value)  # Keep turning
+					self.state = 2
 			
 			if self.state == 3:  # Turn Right State
 				#self.get_logger().info("Prev Pose %s" % self.previous_pose)
@@ -158,9 +160,11 @@ class zigzag(Node):
 
 				#if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:
 				if self.scan_ranges[SCAN_DIRECTION.LEFT.value] > .6:
+					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
 					self.state = 0
 				else:
 					self.update_cmd_vel(VELOCITY.STOP.value, -VELOCITY.ANGULAR.value)
+					self.state = 3
 			#else:
 			#	self.state = 0
 
