@@ -79,7 +79,7 @@ class zigzag(Node):
 		# Fires up getting sensor data (continuisly)
 		# Sensor data is contained in "msg"
 		# self.scan_ranges = msg.ranges  # Update sensor data
-		scan_angles = [0, 90, 270]
+		scan_angles = [0, 30, 330]
 		for i in range(len(scan_angles)):
 			angle = scan_angles[i]  # 0, 30, 330 
 			distance_at_angle = msg.ranges[angle]
@@ -146,7 +146,7 @@ class zigzag(Node):
 				#self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
 				
 				#if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:  # Check if robot has turned away enough # 30 degrees rad
-				if self.scan_ranges[SCAN_DIRECTION.RIGHT.value] > .6:
+				if self.scan_ranges[SCAN_DIRECTION.RIGHT.value] >= .6:
 					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
 					self.state = 0
 				else:
@@ -159,7 +159,7 @@ class zigzag(Node):
 				#self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
 
 				#if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:
-				if self.scan_ranges[SCAN_DIRECTION.LEFT.value] > .6:
+				if self.scan_ranges[SCAN_DIRECTION.LEFT.value] >= .6:
 					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
 					self.state = 0
 				else:
