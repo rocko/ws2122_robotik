@@ -55,6 +55,8 @@ class zigzag(Node):
 		# 3 - Turning right
 
 		self.scan_ranges = [.0, .0, .0]
+		self.avoidance_angle = 0.174533
+
 
 		self.init_scan_state = False
 		self.init_odom_state = False
@@ -79,7 +81,7 @@ class zigzag(Node):
 		# Fires up getting sensor data (continuisly)
 		# Sensor data is contained in "msg"
 		# self.scan_ranges = msg.ranges  # Update sensor data
-		scan_angles = [0, 30, 330]
+		scan_angles = [0, 15, 345]
 		for i in range(len(scan_angles)):
 			angle = scan_angles[i]  # 0, 30, 330 
 			distance_at_angle = msg.ranges[angle]
@@ -116,23 +118,20 @@ class zigzag(Node):
 			self.get_logger().info("STATE %s" % self.state)
 			# Statemachine
 			if self.state == 0:  # Is looking for new direction ?
-				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] > .7:  # Check if obstacle in front
+				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] > .4:  # Check if obstacle in front
 					self.get_logger().info("Nothing in front")
 					# Noting in front
-					if self.scan_ranges[SCAN_DIRECTION.LEFT.value] < .6:  # Check if obstacle to the left
+					if self.scan_ranges[SCAN_DIRECTION.LEFT.value] < .3:  # Check if obstacle to the left
 						self.get_logger().info("Obstacle to left")
-						#self.previous_pose = self.current_pose
 						self.state = 3  # Turn right
-					elif self.scan_ranges[SCAN_DIRECTION.RIGHT.value] < .6:  # Check if obstacle to the right
+					elif self.scan_ranges[SCAN_DIRECTION.RIGHT.value] < .3:  # Check if obstacle to the right
 						self.get_logger().info("Obstacle to right")
-						#self.previous_pose = self.current_pose
 						self.state = 2  # Turn left
 					else:
 						self.state = 1  # Drive forwards
 
-				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] < .7: 	# Check if obstacle in front
-					self.get_logger().info("Obstacle in front")
-					#self.previous_pose = self.current_pose					
+				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] < .3: 	# Check if obstacle in front
+					self.get_logger().info("Obstacle in front")				
 					self.state = 3  # Turn right
 	
 			if self.state == 1:  # Drive forwards
@@ -140,44 +139,14 @@ class zigzag(Node):
 				self.state = 0
 
 			if self.state == 2:  # Turn Left State
-				#self.get_logger().info("Prev Pose %s" % self.previous_pose)
-				#self.get_logger().info("Cur Pose %s" % self.current_pose)
-				#self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
-				
-				#if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:  # Check if robot has turned away enough # 30 degrees rad
-				#if self.scan_ranges[SCAN_DIRECTION.RIGHT.value] >= .6:
-				#	self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
-				#	self.state = 0
-				#else:
-				#self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.ANGULAR.value)  # Keep turning
-				#	self.state = 2
-				angle = 0.174533  # 10 degrees
-				goal = self.current_pose[2] - angle
+				goal = self.current_pose[2] - self.avoidance_angle
 				self.update_cmd_vel(VELOCITY.STOP.value, self.turn(goal))  # Keep turning
 				self.state = 0
 				
-				
-
-			
 			if self.state == 3:  # Turn Right State
-				#self.get_logger().info("Prev Pose %s" % self.previous_pose)
-				#self.get_logger().info("Cur Pose %s" % self.current_pose)
-				#self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
-
-				#if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:
-				#if self.scan_ranges[SCAN_DIRECTION.LEFT.value] >= .6:
-				#	self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
-				#	self.state = 0
-				#else:
-				#self.update_cmd_vel(VELOCITY.STOP.value, -VELOCITY.ANGULAR.value)
-				#	self.state = 3
-				angle = 0.7853  # 10 degrees
-				goal = self.current_pose[2] + angle
+				goal = self.current_pose[2] + self.avoidance_angle
 				self.update_cmd_vel(VELOCITY.STOP.value, self.turn(goal))  # Keep turning
 				self.state = 0
-			#else:
-			#	self.state = 0
-				pass
 
 	def turn(self, angle) -> float:
 		ang_velocity = VELOCITY.ANGULAR.value
@@ -193,14 +162,12 @@ class zigzag(Node):
 
 		return ang_velocity
 
-
 	def update_cmd_vel(self, lin_velocity, ang_velocity) -> None:
 		twist = Twist()
 		twist.linear.x = lin_velocity  # self.velocity[0]
 		twist.angular.z = ang_velocity  #self.velocity[1]
 		self.cmd_vel_pub.publish(twist)
 			
-
 
 	#def constrain(self, velocity:float, min:float, max:float) -> float:
 	#	if velocity < min:
