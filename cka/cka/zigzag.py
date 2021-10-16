@@ -110,43 +110,43 @@ class zigzag(Node):
 		if self.init_scan_state and self.init_odom_state:
 			
 			# Statemachine
-			if self.state == STATE.SCAN:  # Is looking for new direction ?
-				if self.scan_ranges[SCAN_DIRECTION.FRONT] > .7:  # Check if obstacle in front
+			if self.state == STATE.SCAN.value:  # Is looking for new direction ?
+				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] > .7:  # Check if obstacle in front
 					# Noting in front
-					if self.scan_ranges[SCAN_DIRECTION.LEFT] < .6:  # Check if obstacle to the left
+					if self.scan_ranges[SCAN_DIRECTION.LEFT.value] < .6:  # Check if obstacle to the left
 						self.previous_pose = self.current_pose
 						# Turn right
-						self.state = STATE.TURN_RIGHT
-					elif self.scan_ranges[SCAN_DIRECTION.RIGHT] < .6:  # Check if obstacle to the right
+						self.state = STATE.TURN_RIGHT.value
+					elif self.scan_ranges[SCAN_DIRECTION.RIGHT.value] < .6:  # Check if obstacle to the right
 						self.previous_pose = self.current_pose
 						# Turn left
-						self.state = STATE.TURN_LEFT
+						self.state = STATE.TURN_LEFT.value
 					else:
 						# Drive forwards
-						self.state = STATE.FORWARD
+						self.state = STATE.FORWARD.value
 
-				if self.scan_ranges[SCAN_DIRECTION.FRONT] < .7: 	# Check if obstacle in front
+				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] < .7: 	# Check if obstacle in front
 					self.get_logger().info("Obstacle in front")
 					# Something in front
 					self.previous_pose = self.current_pose					
 					# Turn right
 					self.state = 3
 	
-			elif self.state == STATE.FORWARD:  # Drive forwards
+			elif self.state == STATE.FORWARD.value:  # Drive forwards
 				self.update_cmd_vel(.1, .0)
 
-			elif self.state == STATE.TURN_LEFT:  # Turn Left State
+			elif self.state == STATE.TURN_LEFT.value:  # Turn Left State
 				if math.abs(self.previous_pose[2] - self.current_pose[2]) >= 0.5:  # Check if robot has turned away enough # 30 degrees rad
-					self.state = STATE.SCAN
+					self.state = STATE.SCAN.value
 				else:
 					self.update_cmd_vel(.0, -.2)  # Keep turning
-			elif self.state == STATE.TURN_RIGHT:  # Turn Right State
+			elif self.state == STATE.TURN_RIGHT.value:  # Turn Right State
 				if math.abs(self.previous_pose[2] - self.current_pose[2]) >= .5:
-					self.state = STATE.SCAN
+					self.state = STATE.SCAN.value
 				else:
 					self.update_cmd_vel(.0, .2)
 			else:
-				self.state = STATE.SCAN
+				self.state = STATE.SCAN.value
 
 	def update_cmd_vel(self, lin_velocity, ang_velocity) -> None:
 		twist = Twist()
