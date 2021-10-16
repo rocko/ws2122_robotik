@@ -81,7 +81,7 @@ class zigzag(Node):
 		# Fires up getting sensor data (continuisly)
 		# Sensor data is contained in "msg"
 		# self.scan_ranges = msg.ranges  # Update sensor data
-		scan_angles = [0, 15, 345]
+		scan_angles = [0, 45, 315]
 		for i in range(len(scan_angles)):
 			angle = scan_angles[i]  # 0, 30, 330 
 			distance_at_angle = msg.ranges[angle]
