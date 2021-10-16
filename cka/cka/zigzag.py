@@ -135,11 +135,12 @@ class zigzag(Node):
 					# Something in front
 					self.previous_pose = self.current_pose					
 					# Turn right
-					self.state = 3
+					self.state = STATE.TURN_RIGHT.value
 	
 			elif self.state == STATE.FORWARD.value:  # Drive forwards
 				self.get_logger().info("Going forward")
 				self.update_cmd_vel(.0, .0)
+				self.state = STATE.SCAN.value
 
 			elif self.state == STATE.TURN_LEFT.value:  # Turn Left State
 				self.get_logger().info("Turning left")
