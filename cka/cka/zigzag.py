@@ -128,8 +128,7 @@ class zigzag(Node):
 						#self.previous_pose = self.current_pose
 						self.state = 2  # Turn left
 					else:
-						# Drive forwards
-						self.state = 1
+						self.state = 1  # Drive forwards
 
 				if self.scan_ranges[SCAN_DIRECTION.FRONT.value] < .7: 	# Check if obstacle in front
 					self.get_logger().info("Obstacle in front")
@@ -146,12 +145,19 @@ class zigzag(Node):
 				#self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
 				
 				#if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:  # Check if robot has turned away enough # 30 degrees rad
-				if self.scan_ranges[SCAN_DIRECTION.RIGHT.value] >= .6:
-					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
-					self.state = 0
-				else:
-					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.ANGULAR.value)  # Keep turning
-					self.state = 2
+				#if self.scan_ranges[SCAN_DIRECTION.RIGHT.value] >= .6:
+				#	self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
+				#	self.state = 0
+				#else:
+				#self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.ANGULAR.value)  # Keep turning
+				#	self.state = 2
+				angle = 0.174533  # 10 degrees
+				goal = self.current_pose[2] - angle
+				self.update_cmd_vel(VELOCITY.STOP.value, self.turn(goal))  # Keep turning
+				self.state = 0
+				
+				
+
 			
 			if self.state == 3:  # Turn Right State
 				#self.get_logger().info("Prev Pose %s" % self.previous_pose)
@@ -159,14 +165,33 @@ class zigzag(Node):
 				#self.get_logger().info("Result %s" % math.fabs(self.previous_pose[2] - self.current_pose[2]))
 
 				#if math.fabs(self.previous_pose[2] - self.current_pose[2]) >= .5:
-				if self.scan_ranges[SCAN_DIRECTION.LEFT.value] >= .6:
-					self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
-					self.state = 0
-				else:
-					self.update_cmd_vel(VELOCITY.STOP.value, -VELOCITY.ANGULAR.value)
-					self.state = 3
+				#if self.scan_ranges[SCAN_DIRECTION.LEFT.value] >= .6:
+				#	self.update_cmd_vel(VELOCITY.STOP.value, VELOCITY.STOP.value)
+				#	self.state = 0
+				#else:
+				#self.update_cmd_vel(VELOCITY.STOP.value, -VELOCITY.ANGULAR.value)
+				#	self.state = 3
+				angle = 0.174533  # 10 degrees
+				goal = self.current_pose[2] + angle
+				self.update_cmd_vel(VELOCITY.STOP.value, self.turn(goal))  # Keep turning
+				self.state = 0
 			#else:
 			#	self.state = 0
+				pass
+
+	def turn(self, angle) -> float:
+		if math.fabs(angle) > 0.01:
+			if angle >= math.pi:
+				ang_velocity = -VELOCITY.ANGULAR.value
+			elif math.pi > angle and angle >= 0:
+				ang_velocity = VELOCITY.ANGULAR.value
+			elif 0 > angle and angle >= -math.pi:
+				ang_velocity = -VELOCITY.ANGULAR.value
+			elif angle > -math.pi:
+				ang_velocity = VELOCITY.ANGULAR.value
+
+		return ang_velocity
+
 
 	def update_cmd_vel(self, lin_velocity, ang_velocity) -> None:
 		twist = Twist()
