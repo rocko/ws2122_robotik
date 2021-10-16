@@ -171,7 +171,7 @@ class zigzag(Node):
 				#else:
 				#self.update_cmd_vel(VELOCITY.STOP.value, -VELOCITY.ANGULAR.value)
 				#	self.state = 3
-				angle = 0.174533  # 10 degrees
+				angle = 0.7853  # 10 degrees
 				goal = self.current_pose[2] + angle
 				self.update_cmd_vel(VELOCITY.STOP.value, self.turn(goal))  # Keep turning
 				self.state = 0
