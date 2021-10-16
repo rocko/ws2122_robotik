@@ -73,7 +73,8 @@ class zigzag(Node):
 				self.scan_ranges[i] = distance_at_angle
 			
 			self.init_scan_state = True
-		#self.get_logger().info("scan_callback %s" % msg)
+		self.get_logger().info("scan_callback %s" % msg)
+		self.get_logger().info("scan_callback %s" % self.scan_ranges)
 
 	def cmd_vel_raw_callback(self, msg) -> None:
 		# Fires upon a change on linear or angular velocity induced by Publisher "cmd_vel_pub"
