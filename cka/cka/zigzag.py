@@ -162,7 +162,7 @@ class zigzag(Node):
 		# Find index with minimum value
 		minimum = min(self.scan_ranges)
 		# obstruction_angle = self.scan_angles[self.scan_ranges.index(min(self.scan_ranges))]
-		obstruction_index = self.scan_angles.index(minimum)
+		obstruction_index = self.scan_ranges.index(minimum)
 		# Find index with maximum value
 		# maximum = max(self.scan_ranges)
 		#evasion_angle = self.scan_angles[self.scan_ranges.index(max(self.scan_ranges))]
