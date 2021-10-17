@@ -62,7 +62,7 @@ class zigzag(Node):
 		# 3 - Turning right
 		self.scan = {
 			"resolution": 45,
-			"scan_angles": [0, 45, 90, 135, 0, 235, 270, 315],
+			"scan_angles": [0, 45, 90, 135, 180, 235, 270, 315],
 			"scan_ranges": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
 			"evasion_angle": 0.0,
 			"safety_distance": 0.4,
