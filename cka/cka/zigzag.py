@@ -130,16 +130,19 @@ class zigzag(Node):
 	def update_callback(self) -> None:
 		if self.init_scan_state and self.init_odom_state:
 			if self.is_obstructed:
+				self.get_logger().info("obstructed")
 				self.update_cmd_vel(VELOCITY.STOP.value, self.turn())
 				# Do not update evasion angle
 				self.skip = True
 			else:
+				self.get_logger().info("not obstructed")
 				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
 				self.skip = False
 
 	def turn(self) -> float:
 		#angle = self.current_pose[2] + self.evasion_angle
 		angle = self.evasion_angle - self.current_pose[2]
+		self.get_logger().info("new angle %s" % angle)
 
 		ang_velocity = 0.0  # VELOCITY.ANGULAR.value
 		if math.fabs(angle) > 0.01:
