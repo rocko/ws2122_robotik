@@ -99,11 +99,13 @@ class zigzag(Node):
 		self.is_obstructed = min(self.scan_ranges) < self.safety_distance  # Detect if obstructed or not
 		
 		self.evasion_angle = 0.0
-		if self.is_obstructed and not self.skip:
-			self.obstacle_avoidance = True
+		if self.is_obstructed:
 			obstruction_index = self.scan_ranges.index(min(self.scan_ranges))
 			evasion_index = (obstruction_index + (int) (len(self.scan_ranges) / 2)) % len(self.scan_ranges)
 			evasion_angle = self.scan_angles[evasion_index]
+			self.get_logger().info("obstruction_index %s" % obstruction_index)
+			self.get_logger().info("evasion_index %s" % evasion_index)
+			self.get_logger().info("evasion_angle %s %s" % (evasion_angle, (evasion_angle * (math.pi / 180.0))))
 			self.evasion_angle = evasion_angle * (math.pi / 180.0)
 
 		self.init_scan_state = True
@@ -133,11 +135,11 @@ class zigzag(Node):
 				self.get_logger().info("obstructed")
 				self.update_cmd_vel(VELOCITY.STOP.value, self.turn())
 				# Do not update evasion angle
-				self.skip = True
+				#self.skip = True
 			else:
 				self.get_logger().info("not obstructed")
 				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
-				self.skip = False
+				#self.skip = False
 
 	def turn(self) -> float:
 		#angle = self.current_pose[2] + self.evasion_angle
