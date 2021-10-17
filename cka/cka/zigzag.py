@@ -69,7 +69,9 @@ class zigzag(Node):
 			"skip": False
 		}
 		self.scan_resolution = 45
-		self.scan_angles = [0, 45, 90, 135, 0, 235, 270, 315]  # dont measure behind bot # [0, 45, 90, 135, 180, 235, 270, 315]
+		# Scanning direction CCW
+		self.scan_angles = [0, 315, 270, 235, 0, 135, 45]
+		#self.scan_angles = [0, 45, 90, 135, 0, 235, 270, 315]  # dont measure behind bot # [0, 45, 90, 135, 180, 235, 270, 315]
 		self.scan_ranges = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 		self.evasion_angle = 0.0  # in rad
 		self.safety_distance = 0.4
