@@ -105,10 +105,10 @@ class zigzag(Node):
 			#"left": min(min(msg.ranges[45:134:1]), 1),
 			#"back": min(min(msg.ranges[135:234:1]), 1),
 			#"right": min(min(msg.ranges[235:314:1]), 1),
-			"front": min(min(msg.ranges[0]), 1), #+ msg.ranges[315::1]), 1),
-			"left": min(min(msg.ranges[330]), 1),
+			"front": min(min(msg.ranges[0:1]), 1), #+ msg.ranges[315::1]), 1),
+			"left": min(min(msg.ranges[329:330]), 1),
 			#"back": min(min(msg.ranges[135:234:1]), 1),
-			"right": min(min(msg.ranges[30]), 1),			
+			"right": min(min(msg.ranges[29:30]), 1),			
 		}
 
 		self.init_scan_state = True
