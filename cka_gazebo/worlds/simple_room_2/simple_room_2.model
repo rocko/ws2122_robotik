@@ -758,52 +758,9 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='turtlebot3_burger'>
-        <pose>0.642915 -3.43224 0.008534 0.000446 0.00578 6e-06</pose>
-        <scale>1 1 1</scale>
-        <link name='base_footprint'>
-          <pose>0.642915 -3.43224 0.008534 0.000446 0.00578 6e-06</pose>
-          <velocity>-4e-06 8e-06 -0.05319 0.00043 0.000638 0</velocity>
-          <acceleration>0.000718 0.00038 -1.12329 -6e-06 -0.092137 -7e-06</acceleration>
-          <wrench>0.000718 0.00038 -1.12329 0 -0 0</wrench>
-        </link>
-        <link name='base_link'>
-          <pose>0.642915 -3.43224 0.008534 0.000446 0.00578 6e-06</pose>
-          <velocity>-4e-06 8e-06 -0.05319 0.00043 0.000638 0</velocity>
-          <acceleration>-0.005739 0.000383 -1.12619 -6e-06 -0.092136 -3e-06</acceleration>
-          <wrench>-0.004739 0.000316 -0.929934 0 -0 0</wrench>
-        </link>
-        <link name='base_scan'>
-          <pose>0.642915 -3.43224 0.008534 0.000446 0.00578 6e-06</pose>
-          <velocity>-4e-06 8e-06 -0.05319 0.00043 0.000638 0</velocity>
-          <acceleration>-0.014087 0.00039 -1.12513 4e-06 -0.092175 -9e-06</acceleration>
-          <wrench>-0.001606 4.4e-05 -0.128265 0 -0 0</wrench>
-        </link>
-        <link name='caster_back_link'>
-          <pose>0.561893 -3.43224 0.005002 -1.61596 -0.059442 0.001595</pose>
-          <velocity>-1.8e-05 2.2e-05 -0.053093 -0.002209 -0.002321 0</velocity>
-          <acceleration>0.003965 -0.002672 -1.14212 0 -0 0</acceleration>
-          <wrench>2e-05 -1.3e-05 -0.005711 0 -0 0</wrench>
-        </link>
-        <link name='imu_link'>
-          <pose>0.642915 -3.43224 0.008534 0.000446 0.00578 6e-06</pose>
-          <velocity>-4e-06 8e-06 -0.05319 0.00043 0.000638 0</velocity>
-          <acceleration>0.000765 0.000391 -1.12335 -5e-06 -0.092142 -7e-06</acceleration>
-          <wrench>0.000765 0.000391 -1.12335 0 -0 0</wrench>
-        </link>
-        <link name='wheel_left_link'>
-          <pose>0.642911 -3.43224 0.008534 0.000446 0.005952 6e-06</pose>
-          <velocity>6e-06 -4e-06 -0.05319 0.000424 0.000638 -0</velocity>
-          <acceleration>-0.003015 7e-06 -1.12314 -0.000197 -0.09137 0</acceleration>
-          <wrench>-8.6e-05 0 -0.032008 0 -0 0</wrench>
-        </link>
-        <link name='wheel_right_link'>
-          <pose>0.64291 -3.43224 0.008534 0.000446 0.005968 6e-06</pose>
-          <velocity>6e-06 -4e-06 -0.053192 0.000424 0.000639 0</velocity>
-          <acceleration>-0.003015 7e-06 -1.12315 -0.000202 -0.091357 -3e-06</acceleration>
-          <wrench>-8.6e-05 0 -0.032008 0 -0 0</wrench>
-        </link>
-      </model>
+      
+     
+      
       <light name='sun'>
         <pose>0 0 10 0 -0 0</pose>
       </light>
