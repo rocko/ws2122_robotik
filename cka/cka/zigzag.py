@@ -138,23 +138,23 @@ class zigzag(Node):
 			#	self.get_logger().info("not obstructed")
 			#	self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
 			#	#self.skip = False
-			if self.laser_scan["right"] > 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] < 0.7:
-				self.update_cmd_vel(0.5, -0.5)
-			elif self.laser_scan["right"] > 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] < 0.7:
-				self.update_cmd_vel(0.5, -0.5)
+			if self.laser_scan["right"] > self.safety_distance and self.laser_scan["front"] < self.safety_distance and self.laser_scan["left"] < self.safety_distance:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, -VELOCITY.ANGULAR.value)
+			elif self.laser_scan["right"] > self.safety_distance and self.laser_scan["front"] > self.safety_distance and self.laser_scan["left"] < self.safety_distance:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, -VELOCITY.ANGULAR.value)
 			# Straight
-			elif self.laser_scan["right"] > 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] > 0.7:
-				self.update_cmd_vel(0.5, 0.0)
-			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] < 0.7:
-				self.update_cmd_vel(0.5, 0.0)
-			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] > 0.7:
-				self.update_cmd_vel(0.5, 0.5)
-			elif self.laser_scan["right"] > 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] > 0.7:
-				self.update_cmd_vel(0.5, 0.0)
-			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] > 0.7:
-				self.update_cmd_vel(0.5, 0.0)
-			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] < 0.7:
-				self.update_cmd_vel(0.0, -0.5)
+			elif self.laser_scan["right"] > self.safety_distance and self.laser_scan["front"] > self.safety_distance and self.laser_scan["left"] > self.safety_distance:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
+			elif self.laser_scan["right"] < self.safety_distance and self.laser_scan["front"] > self.safety_distance and self.laser_scan["left"] < self.safety_distance:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
+			elif self.laser_scan["right"] < self.safety_distance and self.laser_scan["front"] > self.safety_distance and self.laser_scan["left"] > self.safety_distance:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.ANGULAR.value)
+			elif self.laser_scan["right"] > self.safety_distance and self.laser_scan["front"] < self.safety_distance and self.laser_scan["left"] > self.safety_distance:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
+			elif self.laser_scan["right"] < self.safety_distance and self.laser_scan["front"] < self.safety_distance and self.laser_scan["left"] > self.safety_distance:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
+			elif self.laser_scan["right"] < self.safety_distance and self.laser_scan["front"] < self.safety_distance and self.laser_scan["left"] < self.safety_distance:
+				self.update_cmd_vel(VELOCITY.STOP.value, -VELOCITY.ANGULAR.value)
 
 	def turn(self) -> float:
 		#angle = self.current_pose[2] + self.evasion_angle
