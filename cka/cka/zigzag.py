@@ -100,10 +100,10 @@ class zigzag(Node):
 		#	self.evasion_angle = evasion_angle * (math.pi / 180.0)
 
 		self.laser_scan = {
-			"front": min(msg.ranges[:44:1] + msg.ranges[315::1]),
-			"left": min(msg.ranges[45:134:1]),
-			"back": min(msg.ranges[135:234:1]),
-			"right": min(msg.ranges[235:314:1]),
+			"front": min(min(msg.ranges[:44:1] + msg.ranges[315::1]), 1),
+			"left": min(min(msg.ranges[45:134:1]), 1),
+			"back": min(min(msg.ranges[135:234:1]), 1),
+			"right": min(min(msg.ranges[235:314:1]), 1),
 		}
 
 		self.init_scan_state = True
