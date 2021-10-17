@@ -128,7 +128,7 @@ class zigzag(Node):
 		#self.get_logger().info("odom_callback %s" % msg)
 
 	def update_callback(self) -> None:
-		if self.init_scan_state and self.init_odom_state:
+		if self.init_scan_state:  # and self.init_odom_state:
 			#if self.is_obstructed:
 			#	self.get_logger().info("obstructed")
 			#	self.update_cmd_vel(VELOCITY.STOP.value, self.turn())
