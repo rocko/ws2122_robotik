@@ -33,7 +33,7 @@ class STATE(Enum):
 
 class VELOCITY(Enum):
 	LINEAR = 0.3
-	ANGULAR = 0.5
+	ANGULAR = 0.7
 	STOP = 0.0
 
 class zigzag(Node):
