@@ -144,17 +144,17 @@ class zigzag(Node):
 				self.update_cmd_vel(0.5, -0.5)
 			# Straight
 			elif self.laser_scan["right"] > 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] > 0.7:
-				self.update_cmd_vel(0.5, 0)
+				self.update_cmd_vel(0.5, 0.0)
 			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] < 0.7:
-				self.update_cmd_vel(0.5, 0)
+				self.update_cmd_vel(0.5, 0.0)
 			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] > 0.7:
 				self.update_cmd_vel(0.5, 0.5)
 			elif self.laser_scan["right"] > 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] > 0.7:
-				self.update_cmd_vel(0.5, 0)
+				self.update_cmd_vel(0.5, 0.0)
 			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] > 0.7:
-				self.update_cmd_vel(0.5, 0)
+				self.update_cmd_vel(0.5, 0.0)
 			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] < 0.7:
-				self.update_cmd_vel(0, -0.5)
+				self.update_cmd_vel(0.0, -0.5)
 
 	def turn(self) -> float:
 		#angle = self.current_pose[2] + self.evasion_angle
@@ -174,7 +174,7 @@ class zigzag(Node):
 
 		return ang_velocity
 
-	def update_cmd_vel(self, lin_velocity, ang_velocity) -> None:
+	def update_cmd_vel(self, lin_velocity:float, ang_velocity:float) -> None:
 		twist = Twist()
 		twist.linear.x = lin_velocity  # self.velocity[0]
 		twist.angular.z = ang_velocity  #self.velocity[1]
