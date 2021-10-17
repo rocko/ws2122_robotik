@@ -42,13 +42,6 @@ class zigzag(Node):
 		
 		qos = QoSProfile(depth=10)
 
-		# Dicts
-		self.pose = {
-			#         x   y theta
-			"curr": [.0, .0, .0],
-			"prev": [.0, .0, .0]
-		}
-
 		# Initialise variables
 		self.current_pose = [.0, .0, .0]
 		self.previous_pose = [.0, .0, .0]
@@ -60,14 +53,7 @@ class zigzag(Node):
 		# 1 - Forward
 		# 2 - Turning left
 		# 3 - Turning right
-		self.scan = {
-			"resolution": 45,
-			"scan_angles": [0, 45, 90, 135, 180, 235, 270, 315],
-			"scan_ranges": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-			"evasion_angle": 0.0,
-			"safety_distance": 0.4,
-			"skip": False
-		}
+
 		self.scan_resolution = 45
 		# Scanning direction CCW
 		self.scan_angles = [0, 315, 270, 235, 180, 135, 45]
@@ -76,6 +62,9 @@ class zigzag(Node):
 		self.evasion_angle = 0.0  # in rad
 		self.safety_distance = 0.4
 		self.skip = False
+
+		self.laser_scan = {}
+
 
 		self.init_scan_state = False
 		self.init_odom_state = False
@@ -97,18 +86,25 @@ class zigzag(Node):
 		# Fires up getting sensor data (continuisly)
 		# Sensor data is contained in "msg"
 		# self.scan_ranges = msg.ranges  # Update sensor data
-		self.scan_ranges = msg.ranges[::self.scan_resolution]  # Update range measurements
-		self.is_obstructed = min(self.scan_ranges) < self.safety_distance  # Detect if obstructed or not
+		#self.scan_ranges = msg.ranges[::self.scan_resolution]  # Update range measurements
+		#self.is_obstructed = min(self.scan_ranges) < self.safety_distance  # Detect if obstructed or not
 		
-		self.evasion_angle = 0.0
-		if self.is_obstructed:
-			obstruction_index = self.scan_ranges.index(min(self.scan_ranges))
-			evasion_index = (obstruction_index + (int) (len(self.scan_ranges) / 2)) % len(self.scan_ranges)
-			evasion_angle = self.scan_angles[evasion_index]
-			self.get_logger().info("obstruction_index %s" % obstruction_index)
-			self.get_logger().info("evasion_index %s" % evasion_index)
-			self.get_logger().info("evasion_angle %s %s" % (evasion_angle, (evasion_angle * (math.pi / 180.0))))
-			self.evasion_angle = evasion_angle * (math.pi / 180.0)
+		#self.evasion_angle = 0.0
+		#if self.is_obstructed:
+		#	obstruction_index = self.scan_ranges.index(min(self.scan_ranges))
+		#	evasion_index = (obstruction_index + (int) (len(self.scan_ranges) / 2)) % len(self.scan_ranges)
+		#	evasion_angle = self.scan_angles[evasion_index]
+		#	self.get_logger().info("obstruction_index %s" % obstruction_index)
+		#	self.get_logger().info("evasion_index %s" % evasion_index)
+		#	self.get_logger().info("evasion_angle %s %s" % (evasion_angle, (evasion_angle * (math.pi / 180.0))))
+		#	self.evasion_angle = evasion_angle * (math.pi / 180.0)
+
+		self.laser_scan = {
+			"front": min(msg.ranges[:44:1] + msg.ranges[315::1]),
+			"left": min(msg.ranges[45:134:1]),
+			"back": min(msg.ranges[135:234:1]),
+			"right": min(msg.ranges[235:314:1]),
+		}
 
 		self.init_scan_state = True
 
@@ -133,15 +129,32 @@ class zigzag(Node):
 
 	def update_callback(self) -> None:
 		if self.init_scan_state and self.init_odom_state:
-			if self.is_obstructed:
-				self.get_logger().info("obstructed")
-				self.update_cmd_vel(VELOCITY.STOP.value, self.turn())
-				# Do not update evasion angle
-				#self.skip = True
-			else:
-				self.get_logger().info("not obstructed")
-				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
-				#self.skip = False
+			#if self.is_obstructed:
+			#	self.get_logger().info("obstructed")
+			#	self.update_cmd_vel(VELOCITY.STOP.value, self.turn())
+			#	# Do not update evasion angle
+			#	#self.skip = True
+			#else:
+			#	self.get_logger().info("not obstructed")
+			#	self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
+			#	#self.skip = False
+			if self.laser_scan["right"] > 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] < 0.7:
+				self.update_cmd_vel(0.5, -0.5)
+			elif self.laser_scan["right"] > 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] < 0.7:
+				self.update_cmd_vel(0.5, -0.5)
+			# Straight
+			elif self.laser_scan["right"] > 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] > 0.7:
+				self.update_cmd_vel(0.5, 0)
+			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] < 0.7:
+				self.update_cmd_vel(0.5, 0)
+			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] > 0.7 and self.laser_scan["left"] > 0.7:
+				self.update_cmd_vel(0.5, 0.5)
+			elif self.laser_scan["right"] > 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] > 0.7:
+				self.update_cmd_vel(0.5, 0)
+			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] > 0.7:
+				self.update_cmd_vel(0.5, 0)
+			elif self.laser_scan["right"] < 0.7 and self.laser_scan["front"] < 0.7 and self.laser_scan["left"] < 0.7:
+				self.update_cmd_vel(0, -0.5)
 
 	def turn(self) -> float:
 		#angle = self.current_pose[2] + self.evasion_angle
