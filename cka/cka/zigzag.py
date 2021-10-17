@@ -33,7 +33,7 @@ class STATE(Enum):
 
 class VELOCITY(Enum):
 	LINEAR = 0.3
-	ANGULAR = 1.5
+	ANGULAR = 0.5
 	STOP = 0.0
 
 class zigzag(Node):
@@ -60,7 +60,7 @@ class zigzag(Node):
 		#self.scan_angles = [0, 45, 90, 135, 0, 235, 270, 315]  # dont measure behind bot # [0, 45, 90, 135, 180, 235, 270, 315]
 		self.scan_ranges = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 		self.evasion_angle = 0.0  # in rad
-		self.safety_distance = 0.4
+		self.safety_distance = 0.6
 		self.skip = False
 
 		self.laser_scan = {}
