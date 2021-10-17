@@ -42,6 +42,13 @@ class zigzag(Node):
 		
 		qos = QoSProfile(depth=10)
 
+		# Dicts
+		self.pose = {
+			#         x   y theta
+			"curr": [.0, .0, .0],
+			"prev": [.0, .0, .0]
+		}
+
 		# Initialise variables
 		self.current_pose = [.0, .0, .0]
 		self.previous_pose = [.0, .0, .0]
@@ -53,11 +60,20 @@ class zigzag(Node):
 		# 1 - Forward
 		# 2 - Turning left
 		# 3 - Turning right
+		self.scan = {
+			"resolution": 45,
+			"scan_angles": [0, 45, 90, 135, 0, 235, 270, 315],
+			"scan_ranges": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+			"evasion_angle": 0.0,
+			"safety_distance": 0.4,
+			"skip": False
+		}
 		self.scan_resolution = 45
-		self.scan_angles = [0, 45, 90, 135, 180, 235, 270, 315]
+		self.scan_angles = [0, 45, 90, 135, 0, 235, 270, 315]  # dont measure behind bot # [0, 45, 90, 135, 180, 235, 270, 315]
 		self.scan_ranges = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 		self.evasion_angle = 0.0  # in rad
 		self.safety_distance = 0.4
+		self.skip = False
 
 		self.init_scan_state = False
 		self.init_odom_state = False
@@ -79,21 +95,17 @@ class zigzag(Node):
 		# Fires up getting sensor data (continuisly)
 		# Sensor data is contained in "msg"
 		# self.scan_ranges = msg.ranges  # Update sensor data
-		self.scan_ranges = msg.ranges[::self.scan_resolution]
+		self.scan_ranges = msg.ranges[::self.scan_resolution]  # Update range measurements
+		self.is_obstructed = min(self.scan_ranges) < self.safety_distance  # Detect if obstructed or not
 		
-		self.obstacle_avoidance = False
 		self.evasion_angle = 0.0
-
-		minimum = min(self.scan_ranges)
-		# Skip if minimum at 180 degrees
-		if minimum < self.safety_distance:
+		if self.is_obstructed and not self.skip:
 			self.obstacle_avoidance = True
-			obstruction_index = self.scan_ranges.index(minimum)
-			if obstruction_index != 4:
-				evasion_index = (obstruction_index + (int) (len(self.scan_ranges) / 2)) % len(self.scan_ranges)
-				evasion_angle = self.scan_angles[evasion_index]
-				self.evasion_angle = evasion_angle * (math.pi / 180.0)
-				
+			obstruction_index = self.scan_ranges.index(min(self.scan_ranges))
+			evasion_index = (obstruction_index + (int) (len(self.scan_ranges) / 2)) % len(self.scan_ranges)
+			evasion_angle = self.scan_angles[evasion_index]
+			self.evasion_angle = evasion_angle * (math.pi / 180.0)
+
 		self.init_scan_state = True
 
 	def cmd_vel_callback(self, msg) -> None:
@@ -117,11 +129,13 @@ class zigzag(Node):
 
 	def update_callback(self) -> None:
 		if self.init_scan_state and self.init_odom_state:
-			if not self.obstacle_avoidance:
-				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
-			
-			if self.obstacle_avoidance:
+			if self.is_obstructed:
 				self.update_cmd_vel(VELOCITY.STOP.value, self.turn())
+				# Do not update evasion angle
+				self.skip = True
+			else:
+				self.update_cmd_vel(VELOCITY.LINEAR.value, VELOCITY.STOP.value)
+				self.skip = False
 
 	def turn(self) -> float:
 		#angle = self.current_pose[2] + self.evasion_angle
