@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>cka_gazebo_maze</name>
+  <version>0.0.2</version>
+  <description>Turtlebot 3 (Gazebo package) - WS2122</description>
+  <maintainer email="ch.adolph@ostfalia.de">Christian Adolph</maintainer>
+  <license>STFU</license>
+  <url type="repository">https://github.com/rocko/ws2122_robotik</url>
+  <author email="author1@ostfalia.de">Author 1</author>
+  <author email="author2@ostfalia.de">Author 1</author>
+  <author email="author2@ostfalia.de">Author 1</author>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>gazebo_ros_pkgs</depend>
+  <depend>rclcpp</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <gazebo_ros gazebo_model_path="${prefix}/models"/>
+  </export>
+</package>
