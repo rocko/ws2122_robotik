@@ -18,9 +18,6 @@ def generate_launch_description():
 	
 	config = os.path.join(get_package_share_directory("cka_maze"),"config","config.yaml")
 
-    # Declare gazebo start and model spawn
-    # Example from turtlebot3_world.launch.py
-
 	zigzag = Node(
 		package="cka_maze",
 		executable="maze",
